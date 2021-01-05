@@ -1,5 +1,7 @@
-package ch.weylandinator.control;
-import static ch.weylandinator.control.Calculator.SIGMA_L;
+package ch.weylandinator.controller;
+
+import static ch.weylandinator.controller.Calculator.SIGMA_L;
+
 public enum Formula
 {
     URI("U = R * I"),
