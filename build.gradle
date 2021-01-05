@@ -27,11 +27,16 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ch.weylandinator.App'
+        )
+    }
+}
+
 runtime {
     modules = ['java.naming', 'java.xml']
-    launcher {
-        noConsole = true
-    }
     jpackage {
         def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def imgType = currentOs.windows ? 'ico' : currentOs.macOsX ? 'icns' : 'png'
