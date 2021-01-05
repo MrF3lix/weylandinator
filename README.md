@@ -16,7 +16,7 @@
   - Komplettwiederstand berechnen
   - Spannungsabfall pro Wiederstand
 
-### Beispiel
+### Beispiel Schaltung
 
 ![Beispiel](./docs/beispiel.dio.svg)
 
