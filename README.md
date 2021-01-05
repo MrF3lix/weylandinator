@@ -1,6 +1,6 @@
 # Weylandinator
 
-![Works](https://img.shields.io/badge/does%20it%20work%3F-totally-success)
+![CI](https://github.com/MrF3lix/weylandinator/workflows/CI/badge.svg)
 [![GitHub issues](https://img.shields.io/github/issues/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator/issues)
 
 ![Weylandinator](./img/weylandinator-logo.png)
