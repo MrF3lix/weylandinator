@@ -1,7 +1,7 @@
-# Weylandinator
+# Weylandinator (c)
 
-![Works](https://img.shields.io/badge/does%20it%20work%3F-totally-success)
-[![GitHub license](https://img.shields.io/github/license/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MrF3lix/weylandinator/CI?label=CI&logo=GitHUb)
+[![GitHub issues](https://img.shields.io/github/issues/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator/issues)
 
 ![Weylandinator](./img/weylandinator-logo.png)
 
