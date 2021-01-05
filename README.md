@@ -1,7 +1,7 @@
 # Weylandinator
 
-![Works](https://img.shields.io/badge/does%20it%20work%3F-totally-success)
-[![GitHub license](https://img.shields.io/github/license/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MrF3lix/weylandinator/CI?label=CI&logo=GitHUb)
+[![GitHub issues](https://img.shields.io/github/issues/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator/issues)
 
 ![Weylandinator](./img/weylandinator-logo.png)
 
@@ -20,9 +20,7 @@
 
 ![Beispiel](./docs/beispiel.dio.svg)
 
-### Datenstruktur
-
-Circuit Objekt
+### Beispiel Datenstruktur Circuit
 
 ```JSON
 "circuit": {
@@ -31,6 +29,7 @@ Circuit Objekt
             "start": "1",
             "end": "2",
             "type": "Spannungsquelle",
+            "name": "U0",
             "properties": [
                 {
                     "key": "amount",
@@ -42,6 +41,7 @@ Circuit Objekt
         {
             "start": "2",
             "end": "3",
+            "name": "R1",
             "type": "Wiederstand",
             "properties": [
                 {
@@ -52,9 +52,23 @@ Circuit Objekt
             ]
         },
         {
-            "start": "Wiederstand",
-            "end": "3",
-            "type": "4",
+            "start": "3",
+            "end": "4",
+            "name": "R2",
+            "type": "Wiederstand",
+            "properties": [
+                {
+                    "key": "amount",
+                    "value": "1000",
+                    "unit": "Ohm"
+                }
+            ]
+        },
+        {
+            "start": "4",
+            "end": "5",
+            "name": "R3",
+            "type": "Wiederstand",
             "properties": [
                 {
                     "key": "amount",
@@ -65,12 +79,13 @@ Circuit Objekt
         },
         {
             "start": "3",
-            "end": "4",
+            "end": "5",
+            "name": "R4",
             "type": "Wiederstand",
             "properties": [
                 {
                     "key": "amount",
-                    "value": "1000",
+                    "value": "2000",
                     "unit": "Ohm"
                 }
             ]
