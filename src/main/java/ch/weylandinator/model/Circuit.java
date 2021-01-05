@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Circuit {
-    private ArrayList<CircuitElement> elements = new ArrayList<>();
+    private ArrayList<Element> elements = new ArrayList<>();
 
     public Circuit() {}
 
-    public void addElementToCircuit(CircuitElement element) {
+    public void addElementToCircuit(Element element) {
         elements.add(element);
     }
 
     public void removeElementToCircuit(String elementName) {
-        Iterator<CircuitElement> it = elements.iterator();
+        Iterator<Element> it = elements.iterator();
 
         while(it.hasNext()) {
             if(it.next().getName() == elementName) {
@@ -23,11 +23,11 @@ public class Circuit {
         }
     }
 
-    public CircuitElement getElementByName(String elementName) {
-        Iterator<CircuitElement> it = elements.iterator();
+    public Element getElementByName(String elementName) {
+        Iterator<Element> it = elements.iterator();
 
         while(it.hasNext()) {
-            CircuitElement element = it.next();
+            Element element = it.next();
             if(element.getName() == elementName) {
                 return element;
             }
@@ -38,7 +38,7 @@ public class Circuit {
 
     public int getStartNumber() {
         int lowestStartNumber = Integer.MAX_VALUE;
-        for(CircuitElement element : elements) {
+        for(Element element : elements) {
             if(lowestStartNumber > element.getStartPosition()) {
                 lowestStartNumber = element.getStartPosition();
             }
@@ -49,7 +49,7 @@ public class Circuit {
 
     public int getEndNumber() {
         int highestEndNumber = -1;
-        for(CircuitElement element : elements) {
+        for(Element element : elements) {
             if(highestEndNumber < element.getEndPosition()) {
                 highestEndNumber = element.getEndPosition();
             }
