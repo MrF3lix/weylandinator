@@ -33,7 +33,7 @@ public class MainController implements Initializable {
     private ChoiceBox<String> elementNames;
 
     @FXML
-    private TextField name, start, end, selectedElementValue;
+    private TextField name, start, end, elementValue, resistance, voltage, current;
 
     @FXML
     private Canvas canvas;
@@ -47,17 +47,35 @@ public class MainController implements Initializable {
         newElement.setStartPosition(Integer.parseInt(start.getText()));
         newElement.setEndPosition(Integer.parseInt(end.getText()));
 
+        switch (newElement.getType()) {
+            case RESISTOR:
+                newElement.setResistance(Integer.parseInt(elementValue.getText()));
+                break;
+            case VOLTAGE_SOURCE:
+                newElement.setVoltage(Integer.parseInt(elementValue.getText()));
+                break;
+            case LOAD:
+                newElement.setCurrent(Integer.parseInt(elementValue.getText()));
+                break;
+            default:
+                break;
+        }
+
         stateManager.addElementToCircuit(newElement);
 
         name.clear();
         start.clear();
         end.clear();
+        elementValue.clear();
 
         updateOutput();
+        updateElements();
     }
 
     public void update_onAction() {
-        selectedElement.setValue(Integer.parseInt(selectedElementValue.getText()));
+        selectedElement.setResistance(Integer.parseInt(resistance.getText()));
+        selectedElement.setVoltage(Integer.parseInt(voltage.getText()));
+        selectedElement.setCurrent(Integer.parseInt(current.getText()));
     }
 
     public void updateOutput() {
@@ -67,7 +85,9 @@ public class MainController implements Initializable {
 
     public void updateSelectedElementValue() {
         // TODO use Observable-Pattern for this
-        selectedElementValue.setText(String.valueOf(selectedElement.getValue()));
+        resistance.setText(String.valueOf(selectedElement.getResistance()));
+        voltage.setText(String.valueOf(selectedElement.getVoltage()));
+        current.setText(String.valueOf(selectedElement.getCurrent()));
     }
 
     @Override
@@ -80,16 +100,21 @@ public class MainController implements Initializable {
         fillCircuit();
         displayCircuit();
 
-        elementNames.getItems().setAll(stateManager.getCircuit().getElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+        updateElements();
 
-
-        elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+        elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String prevSelected, String selected) {
+            public void changed(ObservableValue<? extends String> observableValue, String prevSelected,
+                    String selected) {
                 selectedElement = stateManager.getCircuit().getElementByName(selected);
                 updateSelectedElementValue();
             }
         });
+    }
+
+    public void updateElements() {
+        elementNames.getItems().setAll(
+                stateManager.getCircuit().getElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
     }
 
     public void displayCircuit() {
@@ -124,7 +149,6 @@ public class MainController implements Initializable {
         e1.setType(ElementType.VOLTAGE_SOURCE);
         e1.setStartPosition(1);
         e1.setEndPosition(2);
-        e1.setValue(2);
         stateManager.addElementToCircuit(e1);
 
         Element e2 = new Element();

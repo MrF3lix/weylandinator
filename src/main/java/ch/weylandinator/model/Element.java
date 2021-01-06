@@ -5,7 +5,15 @@ public class Element {
     private String name;
     private int startPosition;
     private int endPosition;
-    private int value;
+
+    // Volt
+    private int voltage;
+
+    // Amper
+    private int current;
+
+    // Ohm
+    private int resistance;
 
     public Element() {}
 
@@ -41,11 +49,27 @@ public class Element {
         this.endPosition = endPosition;
     } 
 
-    public int getValue() {
-        return value;
+    public int getVoltage() {
+        return voltage;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public void setVoltage(int voltage) {
+        this.voltage = voltage;
+    } 
+
+    public int getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(int current) {
+        this.current = current;
+    } 
+
+    public int getResistance() {
+        return resistance;
+    }
+
+    public void setResistance(int resistance) {
+        this.resistance = resistance;
     } 
 }

@@ -49,7 +49,7 @@
             </AnchorPane>
           <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="300.0" prefHeight="748.0" prefWidth="300.0">
                <children>
-                  <Button fx:id="add" layoutX="3.0" layoutY="277.0" mnemonicParsing="false" onAction="#add_onAction" prefHeight="34.0" prefWidth="272.0" text="Add" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Button fx:id="add" layoutX="10.0" layoutY="328.0" mnemonicParsing="false" onAction="#add_onAction" prefHeight="34.0" prefWidth="272.0" text="Add" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                   <TextField fx:id="name" layoutX="14.0" layoutY="69.0" prefHeight="34.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                   <Text layoutX="10.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add new element" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <font>
@@ -70,15 +70,15 @@
                   </Text>
                   <Label layoutX="13.0" layoutY="438.0" prefHeight="17.0" prefWidth="55.0" text="Selected" />
                   <ChoiceBox fx:id="elementNames" layoutX="10.0" layoutY="455.0" prefHeight="25.0" prefWidth="272.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <TextField layoutX="10.0" layoutY="561.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Label layoutX="13.0" layoutY="544.0" prefHeight="17.0" prefWidth="55.0" text="Volt" AnchorPane.leftAnchor="10.0" />
-                  <TextField layoutX="10.0" layoutY="616.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Label layoutX="13.0" layoutY="599.0" prefHeight="17.0" prefWidth="55.0" text="Ohm" AnchorPane.leftAnchor="10.0" />
-                  <TextField layoutX="10.0" layoutY="669.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Label layoutX="13.0" layoutY="652.0" prefHeight="17.0" prefWidth="55.0" text="Ampere in" AnchorPane.leftAnchor="10.0" />
-                  <TextField fx:id="selectedElementValue" layoutX="10.0" layoutY="510.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Label layoutX="13.0" layoutY="493.0" prefHeight="17.0" prefWidth="154.0" text="Element Value" AnchorPane.leftAnchor="10.0" />
-                  <Button fx:id="update" layoutX="14.0" layoutY="705.0" mnemonicParsing="false" onAction="#update_onAction" prefHeight="34.0" prefWidth="272.0" text="Update" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <TextField fx:id="voltage" layoutX="10.0" layoutY="505.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="10.0" layoutY="488.0" prefHeight="17.0" prefWidth="55.0" text="Volt" AnchorPane.leftAnchor="10.0" />
+                  <TextField fx:id="resistance" layoutX="10.0" layoutY="560.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="10.0" layoutY="543.0" prefHeight="17.0" prefWidth="55.0" text="Ohm" AnchorPane.leftAnchor="10.0" />
+                  <TextField fx:id="current" layoutX="10.0" layoutY="613.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="10.0" layoutY="596.0" prefHeight="17.0" prefWidth="55.0" text="Ampere in" AnchorPane.leftAnchor="10.0" />
+                  <TextField fx:id="elementValue" layoutX="10.0" layoutY="294.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="10.0" layoutY="277.0" prefHeight="17.0" prefWidth="154.0" text="Element Value" AnchorPane.leftAnchor="10.0" />
+                  <Button fx:id="update" layoutX="10.0" layoutY="649.0" mnemonicParsing="false" onAction="#update_onAction" prefHeight="34.0" prefWidth="272.0" text="Update" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                </children>
             </AnchorPane>
         </items>
