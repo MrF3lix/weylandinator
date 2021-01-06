@@ -20,7 +20,25 @@ jobs:
         java-package: jdk
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build
-      run: ./gradlew build
+
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+
+    - name: Build and analyze
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: ./gradlew build sonarqube --info
+
     - name: Test
       run: ./gradlew test
