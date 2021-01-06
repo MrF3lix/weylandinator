@@ -17,6 +17,7 @@ public class App extends Application {
         stage.setTitle("Weylandinator");
         stage.setScene(new Scene(root));
         stage.getIcons().add(new Image("logo.png"));
+        stage.setMinWidth(1020.0);
         stage.show();
     }
     

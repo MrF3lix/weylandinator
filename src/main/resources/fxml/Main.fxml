@@ -15,7 +15,7 @@
 
 <AnchorPane maxHeight="900.0" minHeight="900.0" minWidth="1000.0" prefHeight="900.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.weylandinator.controller.MainController">
    <children>
-      <SplitPane dividerPositions="0.6928429423459245" prefHeight="750.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.6928429423459245" minWidth="1000.0" prefHeight="750.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane maxWidth="700.0" minHeight="-Infinity" minWidth="700.0" prefWidth="700.0" SplitPane.resizableWithParent="false">
                <children>
