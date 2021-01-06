@@ -12,7 +12,7 @@ public class Circuit {
         elements.add(element);
     }
 
-    public void removeElementToCircuit(String elementName) {
+    public void removeElementFromCircuit(String elementName) {
         Iterator<Element> it = elements.iterator();
 
         while(it.hasNext()) {
@@ -56,5 +56,16 @@ public class Circuit {
         }
 
         return highestEndNumber;
+    }
+
+    @Override
+    public String toString() {
+        String state = "";
+
+        for(Element element : elements) {
+            state += "- "+element.getName()+": "+element.getType()+"\n";
+        }
+
+        return state;
     }
 }
