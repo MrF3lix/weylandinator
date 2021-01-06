@@ -1,13 +1,21 @@
 package ch.weylandinator.util;
 
 /**
+ * Greek Symobls
+ * <ul>
+ *     <li>Sigma: {@value SIGMA_L}</li>
+ *     <li>Omega: {@value OMEGA_L}</li>
+ *     <li>Rho: {@value RHO_S}</li>
+ * </ul>
+ * <a href="https://unicode-table.com/de/">Unicode-Symbol-Search</a>
  * 
  */
 public class Calculator
 {
     public static final String SIGMA_L = "\u03A3";
     public static final String OMEGA_L = "\u03A9";
-    
+    public static final String RHO_S = "\u03C1";
+
     private static final String OPERATOREN = "=+-/*" + SIGMA_L;
     
     /**
@@ -57,7 +65,7 @@ public class Calculator
 
     private int getVariableLocation(Formula formula, String resolveByVariable)
     {
-        return formula.toString().indexOf("resolveByVariable");
+        return formula.toString().indexOf(resolveByVariable);
     }
     
     
