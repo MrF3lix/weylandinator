@@ -30,13 +30,13 @@ jobs:
     - name: Upload dmg
       uses: actions/upload-artifact@v1
       with:
-        name: dmg
+        name: Weylandinator-Mac.dmg
         path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.dmg"
 
     - name: Upload pkg
       uses: actions/upload-artifact@v1
       with:
-        name: dmg
+        name: Weylandinator-Mac.pkg
         path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.pkg"
 
   windows:
@@ -56,8 +56,14 @@ jobs:
     - name: JPackage
       run: ./gradlew jpackage
     
+    - name: Upload msi
+      uses: actions/upload-artifact@v1
+      with:
+        name: Weylandinator-Win.msi
+        path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
+
     - name: Upload Installer
       uses: actions/upload-artifact@v1
       with:
-        name: dmg
-        path: "build/jpackage/"
+        name: Weylandinator-Win.exe
+        path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.exe"
