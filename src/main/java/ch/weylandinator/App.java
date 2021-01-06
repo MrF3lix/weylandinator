@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-
 public class App extends Application {
 
     @Override
@@ -20,9 +19,8 @@ public class App extends Application {
         stage.getIcons().add(new Image("logo.png"));
         stage.show();
     }
-
+    
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
-
 }
