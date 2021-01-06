@@ -2,6 +2,7 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MrF3lix/weylandinator/CI?label=CI&logo=GitHUb)
 [![GitHub issues](https://img.shields.io/github/issues/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator/issues)
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=MrF3lix_weylandinator)
 
 ![Weylandinator](./img/weylandinator-logo.png)
 
