@@ -30,13 +30,13 @@ jobs:
     - name: Upload dmg
       uses: actions/upload-artifact@v1
       with:
-        name: Weylandinator-Mac.dmg
+        name: MacOs
         path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.dmg"
 
     - name: Upload pkg
       uses: actions/upload-artifact@v1
       with:
-        name: Weylandinator-Mac.pkg
+        name: MacOs
         path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.pkg"
 
   windows:
@@ -59,11 +59,11 @@ jobs:
     - name: Upload msi
       uses: actions/upload-artifact@v1
       with:
-        name: Weylandinator-Win.msi
+        name: Windows
         path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.msi"
 
-    - name: Upload Installer
+    - name: Upload exe
       uses: actions/upload-artifact@v1
       with:
-        name: Weylandinator-Win.exe
+        name: Windows
         path: "build/jpackage/${{ env.pkg-name }}-${{ env.pkg-version }}.exe"
