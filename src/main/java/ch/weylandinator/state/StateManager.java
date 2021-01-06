@@ -32,4 +32,6 @@ public class StateManager {
     public String getState() {
         return circuit.toString();
     }
+    
+    public Circuit getCircuit(){return circuit;};
 }

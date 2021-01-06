@@ -68,4 +68,8 @@ public class Circuit {
 
         return state;
     }
+
+    public ArrayList<Element> getElements() {
+        return elements;
+    }
 }
