@@ -1,6 +1,6 @@
-package ch.weylandinator.controller;
+package ch.weylandinator.util;
 
-import static ch.weylandinator.controller.Calculator.SIGMA_L;
+import static ch.weylandinator.util.Calculator.SIGMA_L;
 
 public enum Formula
 {

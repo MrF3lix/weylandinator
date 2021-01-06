@@ -1,4 +1,5 @@
-package ch.weylandinator.controller;
+package ch.weylandinator.util;
+
 /**
  * 
  */

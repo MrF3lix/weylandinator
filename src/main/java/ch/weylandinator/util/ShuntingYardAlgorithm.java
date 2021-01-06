@@ -1,4 +1,4 @@
-package ch.weylandinator.controller;
+package ch.weylandinator.util;
 
 import java.util.HashMap;
 import java.util.Map;
