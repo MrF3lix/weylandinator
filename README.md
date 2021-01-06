@@ -21,6 +21,8 @@
 
 ![Beispiel](./docs/beispiel.dio.svg)
 
+![Schaltung View](./docs/schaltung.dio.svg)
+
 ### Beispiel Datenstruktur Circuit
 
 ```JSON
