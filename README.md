@@ -2,10 +2,7 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/MrF3lix/weylandinator/CI?label=CI&logo=GitHUb)
 [![GitHub issues](https://img.shields.io/github/issues/MrF3lix/weylandinator)](https://github.com/MrF3lix/weylandinator/issues)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MrF3lix_weylandinator&metric=alert_status)](https://sonarcloud.io/dashboard?id=MrF3lix_weylandinator)
-
-
-
+![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/MrF3lix_weylandinator?logo=SonarCloud&server=https%3A%2F%2Fsonarcloud.io)
 
 ![Weylandinator](./img/weylandinator-logo.png)
 
