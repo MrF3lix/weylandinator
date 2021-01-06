@@ -69,13 +69,16 @@
                      </font>
                   </Text>
                   <Label layoutX="13.0" layoutY="438.0" prefHeight="17.0" prefWidth="55.0" text="Selected" />
-                  <ChoiceBox fx:id="elementType1" layoutX="10.0" layoutY="455.0" prefHeight="25.0" prefWidth="272.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <TextField layoutX="10.0" layoutY="507.0" prefHeight="25.0" prefWidth="280.0" />
-                  <Label layoutX="13.0" layoutY="490.0" prefHeight="17.0" prefWidth="55.0" text="Volt" />
-                  <TextField layoutX="10.0" layoutY="562.0" prefHeight="25.0" prefWidth="280.0" />
-                  <Label layoutX="13.0" layoutY="545.0" prefHeight="17.0" prefWidth="55.0" text="Ohm" />
-                  <TextField layoutX="10.0" layoutY="615.0" prefHeight="25.0" prefWidth="280.0" />
-                  <Label layoutX="13.0" layoutY="598.0" prefHeight="17.0" prefWidth="55.0" text="Ampere in" />
+                  <ChoiceBox fx:id="elementNames" layoutX="10.0" layoutY="455.0" prefHeight="25.0" prefWidth="272.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <TextField layoutX="10.0" layoutY="561.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="13.0" layoutY="544.0" prefHeight="17.0" prefWidth="55.0" text="Volt" AnchorPane.leftAnchor="10.0" />
+                  <TextField layoutX="10.0" layoutY="616.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="13.0" layoutY="599.0" prefHeight="17.0" prefWidth="55.0" text="Ohm" AnchorPane.leftAnchor="10.0" />
+                  <TextField layoutX="10.0" layoutY="669.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="13.0" layoutY="652.0" prefHeight="17.0" prefWidth="55.0" text="Ampere in" AnchorPane.leftAnchor="10.0" />
+                  <TextField fx:id="selectedElementValue" layoutX="10.0" layoutY="510.0" prefHeight="25.0" prefWidth="280.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Label layoutX="13.0" layoutY="493.0" prefHeight="17.0" prefWidth="154.0" text="Element Value" AnchorPane.leftAnchor="10.0" />
+                  <Button fx:id="update" layoutX="14.0" layoutY="705.0" mnemonicParsing="false" onAction="#update_onAction" prefHeight="34.0" prefWidth="272.0" text="Update" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                </children>
             </AnchorPane>
         </items>

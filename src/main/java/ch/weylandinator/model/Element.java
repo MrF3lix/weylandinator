@@ -5,6 +5,7 @@ public class Element {
     private String name;
     private int startPosition;
     private int endPosition;
+    private int value;
 
     public Element() {}
 
@@ -38,5 +39,13 @@ public class Element {
 
     public void setEndPosition(int endPosition) {
         this.endPosition = endPosition;
+    } 
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     } 
 }

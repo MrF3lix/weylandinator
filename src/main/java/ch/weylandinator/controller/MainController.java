@@ -2,14 +2,15 @@ package ch.weylandinator.controller;
 
 import java.awt.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
-import ch.weylandinator.model.Circuit;
 import ch.weylandinator.model.Element;
 import ch.weylandinator.model.ElementType;
 import ch.weylandinator.state.StateManager;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -29,10 +30,15 @@ public class MainController implements Initializable {
     private ChoiceBox<ElementType> elementType;
 
     @FXML
-    private TextField name, start, end;
-    
+    private ChoiceBox<String> elementNames;
+
+    @FXML
+    private TextField name, start, end, selectedElementValue;
+
     @FXML
     private Canvas canvas;
+
+    private Element selectedElement;
 
     public void add_onAction() {
         Element newElement = new Element();
@@ -50,9 +56,18 @@ public class MainController implements Initializable {
         updateOutput();
     }
 
+    public void update_onAction() {
+        selectedElement.setValue(Integer.parseInt(selectedElementValue.getText()));
+    }
+
     public void updateOutput() {
-        //TODO use Observable-Pattern for this
+        // TODO use Observable-Pattern for this
         output.setText(stateManager.getState());
+    }
+
+    public void updateSelectedElementValue() {
+        // TODO use Observable-Pattern for this
+        selectedElementValue.setText(String.valueOf(selectedElement.getValue()));
     }
 
     @Override
@@ -61,47 +76,55 @@ public class MainController implements Initializable {
         elementType.getSelectionModel().selectFirst();
 
         gc = canvas.getGraphicsContext2D();
-        
+
         fillCircuit();
         displayCircuit();
+
+        elementNames.getItems().setAll(stateManager.getCircuit().getElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+
+
+        elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String prevSelected, String selected) {
+                selectedElement = stateManager.getCircuit().getElementByName(selected);
+                updateSelectedElementValue();
+            }
+        });
     }
-    
-    public void displayCircuit(){
+
+    public void displayCircuit() {
         gc.fillRoundRect(110, 60, 30, 30, 10, 10);
 
         List<Element> elements = stateManager.getCircuit().getElements();
 
         for (int i = 0; i < elements.size(); i++) {
-            
+
         }
-        
     }
 
     /**
-     * This method will give you the coordinates
-     * of a point on a 5x5 point-grid.
+     * This method will give you the coordinates of a point on a 5x5 point-grid.
      * 
-     * 0 1 2 3 4
-     * 5 6 7 8 9
-     * etc
+     * 0 1 2 3 4 5 6 7 8 9 etc
      * 
-     * @param index 
+     * @param index
      * @return Point The coordinates
      */
-    public Point getCanvasPosition(int index){
-        int size = (int)canvas.getHeight();
-        int spacing = (int)Math.round(size/6);
-        
-        return new Point((index*spacing)%size, (index%4 + 1) * spacing);
+    public Point getCanvasPosition(int index) {
+        int size = (int) canvas.getHeight();
+        int spacing = (int) Math.round(size / 6);
+
+        return new Point((index * spacing) % size, (index % 4 + 1) * spacing);
     }
-    
-    //for testing
-    private void fillCircuit(){
+
+    // for testing
+    private void fillCircuit() {
         Element e1 = new Element();
         e1.setName("Voltage Source");
         e1.setType(ElementType.VOLTAGE_SOURCE);
         e1.setStartPosition(1);
         e1.setEndPosition(2);
+        e1.setValue(2);
         stateManager.addElementToCircuit(e1);
 
         Element e2 = new Element();
