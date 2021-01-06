@@ -100,6 +100,7 @@ public class MainController implements Initializable {
         fillCircuit();
         displayCircuit();
 
+        updateOutput();
         updateElements();
 
         elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
