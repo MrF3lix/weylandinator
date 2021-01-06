@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  fat:
-    runs-on: ubuntu-latest
+  osx:
+    runs-on: [macos-latest]
     steps:
     - uses: actions/checkout@v2
     
