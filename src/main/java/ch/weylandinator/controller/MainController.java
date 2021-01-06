@@ -67,32 +67,39 @@ public class MainController implements Initializable {
     }
     
     public void displayCircuit(){
-        gc.fillRoundRect(110, 60, 30, 30, 10, 10);
-
         List<Element> elements = stateManager.getCircuit().getElements();
 
         for (int i = 0; i < elements.size(); i++) {
-            
+            displayElement(getCanvasPosition(i), elements.get(i).getName());
         }
         
+    }
+    
+    public void displayElement(Point point, String name){
+        int width = 80;
+        int height = 30;
+        gc.strokeRoundRect(point.x - width/2 , point.y- height/2, width, height, 10, 10);
+        gc.strokeText(name, point.x - width/2, point.y- height/2 + 20);
     }
 
     /**
      * This method will give you the coordinates
      * of a point on a 5x5 point-grid.
      * 
-     * 0 1 2 3 4
-     * 5 6 7 8 9
+     * 0 1 2 3 4 ...
+     * 5 6 7 8 9 ...
      * etc
      * 
      * @param index 
      * @return Point The coordinates
      */
     public Point getCanvasPosition(int index){
-        int size = (int)canvas.getHeight();
-        int spacing = (int)Math.round(size/6);
+        int gridSize = 4;
         
-        return new Point((index*spacing)%size, (index%4 + 1) * spacing);
+        int size = (int)canvas.getHeight();
+        int spacing = Math.round(size/(gridSize+1));
+        
+        return new Point(index%gridSize * spacing + spacing, (index/gridSize) * spacing + spacing);
     }
     
     //for testing
