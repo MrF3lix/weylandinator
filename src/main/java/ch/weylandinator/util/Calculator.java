@@ -45,19 +45,21 @@ public class Calculator
     public double solve(Formula form, Map<String, Double> variableValueMap, String variable){
         int variableLocation = getVariableLocation(form, variable);
         int equalsLocation = getEqualsLocation(form);
+        
+        /*
         String dissolvedFormula = form.toString();
         
         if(variableLocation > equalsLocation)
         {
             dissolvedFormula = dissolveByVariable(dissolvedFormula, variable);
-        }
+        }*/
         
         for (Map.Entry<String, Double> variableEntry : variableValueMap.entrySet())
         {
             form.replaceVariable(variableEntry.getKey(), variableEntry.getValue());
         }
 
-        final Expression expression = new Expression(dissolvedFormula);
+        final Expression expression = new Expression(form.getContent());
         return expression.evaluate().getValue();
     }
 

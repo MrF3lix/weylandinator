@@ -25,4 +25,9 @@ public enum Formula
     public void replaceVariable(String variable, double value){
         content = content.replace(variable, String.valueOf(value));
     }
+
+    public String getContent()
+    {
+        return content;
+    }
 }
