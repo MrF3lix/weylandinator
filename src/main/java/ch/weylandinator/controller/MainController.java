@@ -1,8 +1,7 @@
 package ch.weylandinator.controller;
 
-import java.awt.*;
+import java.awt.Point;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -10,6 +9,7 @@ import java.util.stream.Collectors;
 import ch.weylandinator.model.Circuit;
 import ch.weylandinator.model.Element;
 import ch.weylandinator.model.ElementType;
+import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +23,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 
-public class MainController implements Initializable {
+public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
     private GraphicsContext gc;
 
@@ -43,6 +43,39 @@ public class MainController implements Initializable {
     private Canvas canvas;
 
     private Element selectedElement;
+
+    public MainController() {
+        stateManager.addObserver(this);
+    }
+
+    /**
+     * The update method is called every time the StateManager detects a change in the circuit.
+     */
+    @Override
+    public void updated() {
+        updateOutput();
+        updateElements();
+        displayCircuit();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        elementType.getItems().setAll(ElementType.values());
+        elementType.getSelectionModel().selectFirst();
+
+        gc = canvas.getGraphicsContext2D();
+
+        fillCircuit();
+
+        elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String prevSelected,
+                    String selected) {
+                selectedElement = stateManager.getCircuit().getElementByName(selected);
+                updateSelectedElementValue();
+            }
+        });
+    }
 
     public void add_onAction() {
         try {
@@ -73,10 +106,6 @@ public class MainController implements Initializable {
             end.clear();
             elementValue.clear();
 
-            updateOutput();
-            updateElements();
-            displayCircuit();
-
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -104,11 +133,7 @@ public class MainController implements Initializable {
 
     public void delete_onAction() {
         try {
-            stateManager.getCircuit().removeElementFromCircuit(selectedElement.getName());
-
-            updateOutput();
-            updateElements();
-            displayCircuit();
+            stateManager.removeElementFromCircuit(selectedElement.getName());
 
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -129,38 +154,13 @@ public class MainController implements Initializable {
     }
 
     public void updateOutput() {
-        // TODO use Observable-Pattern for this
         output.setText(stateManager.getState());
     }
 
     public void updateSelectedElementValue() {
-        // TODO use Observable-Pattern for this
         resistance.setText(String.valueOf(selectedElement.getResistance()));
         voltage.setText(String.valueOf(selectedElement.getVoltage()));
         current.setText(String.valueOf(selectedElement.getCurrent()));
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        elementType.getItems().setAll(ElementType.values());
-        elementType.getSelectionModel().selectFirst();
-
-        gc = canvas.getGraphicsContext2D();
-
-        fillCircuit();
-        displayCircuit();
-
-        updateOutput();
-        updateElements();
-
-        elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String prevSelected,
-                    String selected) {
-                selectedElement = stateManager.getCircuit().getElementByName(selected);
-                updateSelectedElementValue();
-            }
-        });
     }
 
     public void updateElements() {
