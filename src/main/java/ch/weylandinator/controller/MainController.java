@@ -48,6 +48,8 @@ public class MainController implements Initializable, CircuitObserver {
 
     private Element selectedElement;
 
+    private double resultCurrent;
+
     public MainController() {
         stateManager.addObserver(this);
     }
@@ -157,7 +159,8 @@ public class MainController implements Initializable, CircuitObserver {
         variableMap.put("R", 1.4);
         variableMap.put("I", 100.0);
         
-        double result = calculator.solve(formula, variableMap, "U");
+        resultCurrent = calculator.solve(formula, variableMap, "U");
+        updated();
     }
 
     public void updateOutput() {
@@ -189,9 +192,9 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     public void showCircuitInformation() {
-        gc.strokeText("U - Spannung: 1 V", 10, 10);
-        gc.strokeText("R - Wiederstand: 1 Ohm", 10, 30);
-        gc.strokeText("I - Strom: 1 V", 10, 50);
+        gc.strokeText("U - Spannung: ??? V", 10, 10);
+        gc.strokeText("R - Wiederstand: ??? Ohm", 10, 30);
+        gc.strokeText("I - Strom: "+resultCurrent+" A", 10, 50);
     }
 
     public void displayElement(Point point, String name) {
