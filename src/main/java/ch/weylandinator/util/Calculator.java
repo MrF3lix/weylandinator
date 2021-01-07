@@ -1,5 +1,9 @@
 package ch.weylandinator.util;
 
+import ch.weylandinator.model.Circuit;
+import ch.weylandinator.model.Element;
+
+import java.util.HashMap;
 import java.util.Map;
 /**
  * Greek Symobls
@@ -9,7 +13,6 @@ import java.util.Map;
  *     <li>Rho: {@value RHO_S}</li>
  * </ul>
  * <a href="https://unicode-table.com/de/">Unicode-Symbol-Search</a>
- * 
  */
 public class Calculator
 {
@@ -18,12 +21,12 @@ public class Calculator
     public static final String RHO_S = "\u03C1";
 
     private static final String OPERATOREN = "=+-/*" + SIGMA_L;
-    
+
     /**
      * 0 = Keine Angabe = Gesucht
      *
-     * @param voltage_U Spannung
-     * @param resistance_R Widerstand
+     * @param voltage_U     Spannung
+     * @param resistance_R  Widerstand
      * @param electricity_I Strom
      * @return Gesucht
      */
@@ -41,8 +44,50 @@ public class Calculator
         }
         return 0;
     }
-    
-    public double solve(Formula form, Map<String, Double> variableValueMap, String variable){
+
+    public Circuit solveCircuit(Circuit circuit)
+    {
+
+        for (Element element : circuit.getElements()) {
+
+            double result;
+
+            Formula formula = Formula.URI;
+            Map<String, Double> variableMap = new HashMap<>();
+            
+            if (!hasDefaultValue(element.getResistance())) {
+                variableMap.put("R", (double) element.getResistance());
+            }
+            else{
+                formula = Formula.URI_2;
+            }
+
+            if (!hasDefaultValue(element.getCurrent())) {
+                variableMap.put("I", (double) element.getCurrent());
+            }
+            else{
+                formula = Formula.URI_3;
+            }
+
+            if (!hasDefaultValue(element.getVoltage())) {
+                variableMap.put("U", (double) element.getVoltage());
+            }
+            else{
+                formula = Formula.URI;
+            }
+            
+            if (hasExactlyOneUnknown(formula, variableMap)) {
+                
+                result = solve(formula, variableMap, "TODO");
+            }
+            
+        }
+
+        return null;
+    }
+
+    public double solve(Formula form, Map<String, Double> variableValueMap, String variable)
+    {
         int variableLocation = getVariableLocation(form, variable);
         int equalsLocation = getEqualsLocation(form);
         
@@ -53,14 +98,23 @@ public class Calculator
         {
             dissolvedFormula = dissolveByVariable(dissolvedFormula, variable);
         }*/
-        
-        for (Map.Entry<String, Double> variableEntry : variableValueMap.entrySet())
-        {
+
+        for (Map.Entry<String, Double> variableEntry : variableValueMap.entrySet()) {
             form.replaceVariable(variableEntry.getKey(), variableEntry.getValue());
         }
 
         final Expression expression = new Expression(form.getContent());
         return expression.evaluate().getValue();
+    }
+
+    private boolean hasExactlyOneUnknown(Formula formula, Map<String, Double> variableMap)
+    {
+        return formula.numberOfVariables() == variableMap.size() + 1;
+    }
+
+    private boolean hasDefaultValue(double value)
+    {
+        return value == 0d;
     }
 
     private String dissolveByVariable(String form, String variable)
@@ -71,25 +125,25 @@ public class Calculator
         //3 = 30 / X    ---> * X
 
         //3 = 2 + X * 2 + 4     ---> [2] [X*2] [4] - Summanden  
-        
+
         //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
         //2 + 3 + 4 =  5 / (2 - X)    ---> [2] [5/(2-X)] [4] - Summanden  ---> 2 3 4 + + = 5 2 X - /
         //(2 - X) = 5 / (2 + 3 + 4)  ---> [2] [5/(2-X)] [4] - Summanden   ---> 2 X -     = 5 2 3 4 + + /
-        
+
         //3 = 3 * (X + 2)         ---> [3] [X+2] - Faktoren ---> 3 X 2 + *
         //3 / 3 = X + 2         ---> [X] [2] - Summanden ---> 3 3 / = X 2 +
-        
+
         // 1. Ist Unbekannte Links vom Gleich Zeichen?
         // -> Wenn Rechts 
         // 2. Split by Space / Delimiter
         // 3. [Value] [Operator] 
         // 4. Prüfen ob Hauptoperation Summe oder Produkt
-        
+
         int ADDITIVE = 1;
         int MULTIPLICATIVE = 2;
         int EXPONENTIAL = 3;
         int FUNCTIONAL = 4;
-  
+
         return "";
     }
 
@@ -102,6 +156,4 @@ public class Calculator
     {
         return formula.toString().indexOf(resolveByVariable);
     }
-    
-    
 }

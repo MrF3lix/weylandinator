@@ -150,6 +150,11 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void solve_onAction() {
         Calculator calculator = new Calculator();
+        
+        // ---> 
+        
+        calculator.solveCircuit(stateManager.getCircuit());
+        
 
         Formula formula = Formula.URI;
         Map<String, Double> variableMap = new HashMap<>();
