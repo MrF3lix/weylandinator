@@ -1,5 +1,6 @@
 package ch.weylandinator.util;
 
+import java.util.Map;
 /**
  * Greek Symobls
  * <ul>
@@ -41,22 +42,53 @@ public class Calculator
         return 0;
     }
     
-    public int solve(Formula form, String variable){
+    public double solve(Formula form, Map<String, Double> variableValueMap, String variable){
         int variableLocation = getVariableLocation(form, variable);
         int equalsLocation = getEqualsLocation(form);
         String dissolvedFormula = form.toString();
         
-        if(variableLocation > equalsLocation){
+        if(variableLocation > equalsLocation)
+        {
             dissolvedFormula = dissolveByVariable(dissolvedFormula, variable);
         }
         
-        return 0;
+        for (Map.Entry<String, Double> variableEntry : variableValueMap.entrySet())
+        {
+            form.replaceVariable(variableEntry.getKey(), variableEntry.getValue());
+        }
+
+        final Expression expression = new Expression(dissolvedFormula);
+        return expression.evaluate().getValue();
     }
 
     private String dissolveByVariable(String form, String variable)
     {
+        //3 = 2 + X     ---> - Summand
+        //3 = 10 - X    ---> + X
+        //21 = 3 * X    ---> / Faktor
+        //3 = 30 / X    ---> * X
+
+        //3 = 2 + X * 2 + 4     ---> [2] [X*2] [4] - Summanden  
+        
+        //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
+        //2 + 3 + 4 =  5 / (2 - X)    ---> [2] [5/(2-X)] [4] - Summanden  ---> 2 3 4 + + = 5 2 X - /
+        //(2 - X) = 5 / (2 + 3 + 4)  ---> [2] [5/(2-X)] [4] - Summanden   ---> 2 X -     = 5 2 3 4 + + /
+        
+        //3 = 3 * (X + 2)         ---> [3] [X+2] - Faktoren ---> 3 X 2 + *
+        //3 / 3 = X + 2         ---> [X] [2] - Summanden ---> 3 3 / = X 2 +
+        
+        // 1. Ist Unbekannte Links vom Gleich Zeichen?
+        // -> Wenn Rechts 
+        // 2. Split by Space / Delimiter
+        // 3. [Value] [Operator] 
+        // 4. Prüfen ob Hauptoperation Summe oder Produkt
+        
+        int ADDITIVE = 1;
+        int MULTIPLICATIVE = 2;
+        int EXPONENTIAL = 3;
+        int FUNCTIONAL = 4;
+  
         return "";
-        //return new ShuntingYardAlgorithm().shuntingYard(form);
     }
 
     private int getEqualsLocation(Formula formula)

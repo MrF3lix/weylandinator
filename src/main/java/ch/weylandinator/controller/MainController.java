@@ -2,7 +2,9 @@ package ch.weylandinator.controller;
 
 import java.awt.Point;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,8 @@ import ch.weylandinator.model.Element;
 import ch.weylandinator.model.ElementType;
 import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
+import ch.weylandinator.util.Calculator;
+import ch.weylandinator.util.Formula;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -22,6 +26,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import org.checkerframework.checker.units.qual.C;
 
 public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
@@ -146,11 +151,13 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     public void solve_onAction() {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
-        alert.setHeaderText("Function not implemented yet :(");
+        Calculator calculator = new Calculator();
 
-        alert.showAndWait();
+        Map<String, Double> variableMap = new HashMap<>();
+        variableMap.put("R", 1.4);
+        variableMap.put("I", 100.0);
+        
+        double result = calculator.solve(Formula.URI, variableMap, "U");
     }
 
     public void updateOutput() {
