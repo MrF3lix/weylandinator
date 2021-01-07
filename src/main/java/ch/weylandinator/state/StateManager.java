@@ -25,6 +25,11 @@ public class StateManager {
         notifyObservers();
     }
 
+    public void setCircuit(Circuit circuit) {
+        this. circuit = circuit;
+        notifyObservers();
+    }
+
     public void removeElementFromCircuit(String elementName) {
         circuit.removeElementFromCircuit(elementName);
         notifyObservers();
