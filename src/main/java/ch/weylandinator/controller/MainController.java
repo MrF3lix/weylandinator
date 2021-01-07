@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import ch.weylandinator.model.Circuit;
 import ch.weylandinator.model.Element;
 import ch.weylandinator.model.ElementType;
 import ch.weylandinator.state.CircuitObserver;
@@ -171,6 +170,8 @@ public class MainController implements Initializable, CircuitObserver {
     public void displayCircuit() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        showCircuitInformation();
+
         List<Element> elements = stateManager.getCircuit().getElements();
 
         for (int i = 0; i < elements.size(); i++) {
@@ -179,11 +180,17 @@ public class MainController implements Initializable, CircuitObserver {
 
     }
 
+    public void showCircuitInformation() {
+        gc.strokeText("U - Spannung: 1 V", 10, 10);
+        gc.strokeText("R - Wiederstand: 1 Ohm", 10, 30);
+        gc.strokeText("I - Strom: 1 V", 10, 50);
+    }
+
     public void displayElement(Point point, String name) {
-        int width = 80;
+        int width = 100;
         int height = 30;
         gc.strokeRoundRect(point.x - width / 2, point.y - height / 2, width, height, 10, 10);
-        gc.strokeText(name, point.x - width / 2, point.y - height / 2 + 20);
+        gc.strokeText(name, point.x - width / 2 + 5, point.y - height / 2 + 20);
     }
 
     /**
@@ -213,31 +220,31 @@ public class MainController implements Initializable, CircuitObserver {
         stateManager.addElementToCircuit(e1);
 
         Element e2 = new Element();
-        e2.setName("RESISTOR 1");
+        e2.setName("Resistor");
         e2.setType(ElementType.RESISTOR);
         e2.setStartPosition(2);
         e2.setEndPosition(3);
         stateManager.addElementToCircuit(e2);
 
-        Element e3 = new Element();
-        e3.setName("RESISTOR 2");
-        e3.setType(ElementType.RESISTOR);
-        e3.setStartPosition(3);
-        e3.setEndPosition(4);
-        stateManager.addElementToCircuit(e3);
+        // Element e3 = new Element();
+        // e3.setName("RESISTOR 2");
+        // e3.setType(ElementType.RESISTOR);
+        // e3.setStartPosition(3);
+        // e3.setEndPosition(4);
+        // stateManager.addElementToCircuit(e3);
 
-        Element e4 = new Element();
-        e4.setName("RESISTOR 3");
-        e4.setType(ElementType.RESISTOR);
-        e4.setStartPosition(4);
-        e4.setEndPosition(5);
-        stateManager.addElementToCircuit(e4);
+        // Element e4 = new Element();
+        // e4.setName("RESISTOR 3");
+        // e4.setType(ElementType.RESISTOR);
+        // e4.setStartPosition(4);
+        // e4.setEndPosition(5);
+        // stateManager.addElementToCircuit(e4);
 
-        Element e5 = new Element();
-        e5.setName("RESISTOR 4");
-        e5.setType(ElementType.RESISTOR);
-        e5.setStartPosition(3);
-        e5.setEndPosition(5);
-        stateManager.addElementToCircuit(e5);
+        // Element e5 = new Element();
+        // e5.setName("RESISTOR 4");
+        // e5.setType(ElementType.RESISTOR);
+        // e5.setStartPosition(3);
+        // e5.setEndPosition(5);
+        // stateManager.addElementToCircuit(e5);
     }
 }
