@@ -1,5 +1,8 @@
 package ch.weylandinator.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Element {
     private ElementType type;
     private String name;
@@ -14,6 +17,8 @@ public class Element {
 
     // Ohm
     private int resistance;
+
+    private List<Element> childElements = new ArrayList<>();
 
     public Element() {}
 
@@ -72,4 +77,12 @@ public class Element {
     public void setResistance(int resistance) {
         this.resistance = resistance;
     } 
+
+    public void addChildElement(Element element) {
+        childElements.add(element);
+    }
+
+    public List<Element> getChildElements() {
+        return childElements;
+    }
 }

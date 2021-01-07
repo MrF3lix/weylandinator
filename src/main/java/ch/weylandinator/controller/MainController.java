@@ -25,7 +25,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
-import org.checkerframework.checker.units.qual.C;
 
 public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
@@ -38,7 +37,7 @@ public class MainController implements Initializable, CircuitObserver {
     private ChoiceBox<ElementType> elementType;
 
     @FXML
-    private ChoiceBox<String> elementNames;
+    private ChoiceBox<String> elementNames, availableElements;
 
     @FXML
     private TextField name, start, end, elementValue, resistance, voltage, current;
@@ -55,7 +54,8 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     /**
-     * The update method is called every time the StateManager detects a change in the circuit.
+     * The update method is called every time the StateManager detects a change in
+     * the circuit.
      */
     @Override
     public void updated() {
@@ -77,7 +77,7 @@ public class MainController implements Initializable, CircuitObserver {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String prevSelected,
                     String selected) {
-                selectedElement = stateManager.getCircuit().getElementByName(selected);
+                selectedElement = stateManager.findElementByName(selected);
                 updateSelectedElementValue();
             }
         });
@@ -90,6 +90,9 @@ public class MainController implements Initializable, CircuitObserver {
             newElement.setType(elementType.getSelectionModel().getSelectedItem());
             newElement.setStartPosition(Integer.parseInt(start.getText()));
             newElement.setEndPosition(Integer.parseInt(end.getText()));
+
+            String parentElementName = availableElements.getSelectionModel().getSelectedItem();
+            Element parentElement = stateManager.findElementByName(parentElementName);
 
             switch (newElement.getType()) {
                 case RESISTOR:
@@ -105,7 +108,11 @@ public class MainController implements Initializable, CircuitObserver {
                     break;
             }
 
-            stateManager.addElementToCircuit(newElement);
+            if(parentElement == null) {
+                stateManager.addElementToCircuit(newElement);
+            } else {
+                stateManager.addElementToCircuit(parentElement, newElement);
+            }
 
             name.clear();
             start.clear();
@@ -139,7 +146,7 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void delete_onAction() {
         try {
-            stateManager.removeElementFromCircuit(selectedElement.getName());
+            // stateManager.removeElementFromCircuit(selectedElement.getName());
 
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
@@ -158,13 +165,13 @@ public class MainController implements Initializable, CircuitObserver {
         Map<String, Double> variableMap = new HashMap<>();
         variableMap.put("R", 1.4);
         variableMap.put("I", 100.0);
-        
+
         resultCurrent = calculator.solve(formula, variableMap, "U");
         updated();
     }
 
     public void updateOutput() {
-        output.setText(stateManager.getState());
+        // output.setText(stateManager.getState());
     }
 
     public void updateSelectedElementValue() {
@@ -175,7 +182,9 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void updateElements() {
         elementNames.getItems().setAll(
-                stateManager.getCircuit().getElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+                stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+        availableElements.getItems().setAll(
+            stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
     }
 
     public void displayCircuit() {
@@ -183,7 +192,7 @@ public class MainController implements Initializable, CircuitObserver {
 
         showCircuitInformation();
 
-        List<Element> elements = stateManager.getCircuit().getElements();
+        List<Element> elements = stateManager.getAllElements();
 
         for (int i = 0; i < elements.size(); i++) {
             displayElement(getCanvasPosition(i), elements.get(i).getName());
@@ -194,7 +203,7 @@ public class MainController implements Initializable, CircuitObserver {
     public void showCircuitInformation() {
         gc.fillText("U - Spannung: ??? V", 10, 10);
         gc.fillText("R - Wiederstand: ??? Ohm", 10, 30);
-        gc.fillText("I - Strom: "+resultCurrent+" A", 10, 50);
+        gc.fillText("I - Strom: " + resultCurrent + " A", 10, 50);
     }
 
     public void displayElement(Point point, String name) {

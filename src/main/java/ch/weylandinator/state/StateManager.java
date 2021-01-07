@@ -3,7 +3,6 @@ package ch.weylandinator.state;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.weylandinator.model.Circuit;
 import ch.weylandinator.model.Element;
 
 public class StateManager {
@@ -17,36 +16,74 @@ public class StateManager {
         return instance;
     }
 
-    private Circuit circuit;
     private List<CircuitObserver> observers = new ArrayList<>();
+    private List<Element> elements = new ArrayList<>();
 
     public StateManager() {
-        circuit = new Circuit();
         notifyObservers();
     }
 
-    public void setCircuit(Circuit circuit) {
-        this. circuit = circuit;
-        notifyObservers();
+    public List<Element> getElements() {
+        return elements;
     }
 
-    public void removeElementFromCircuit(String elementName) {
-        circuit.removeElementFromCircuit(elementName);
-        notifyObservers();
+    public Element findElementByName(String name) {
+        Element elementFound = null;
+
+        for(Element element : this.elements) {
+            if(name.equals(element.getName())) {
+                elementFound = element;
+                return elementFound;
+            } else {
+                elementFound = findElementByName(element.getChildElements(), name);
+            }
+        }
+
+        return elementFound;
+    }
+
+    public Element findElementByName(List<Element> elements, String name) {
+        Element elementFound = null;
+
+        for(Element element : elements) {
+            if(name.equals(element.getName())) {
+                elementFound = element;
+                return elementFound;
+            } else {
+                elementFound = findElementByName(element.getChildElements(), name);
+            }
+        }
+
+        return elementFound;
+    }
+
+    public List<Element> getAllElements() {
+        List<Element> collected = new ArrayList<Element>(this.elements);
+        for(Element element : this.elements) {
+            collected.addAll(element.getChildElements());
+        }
+
+        return collected;
+    }
+
+    public List<Element> getAllElements(List<Element> elements) {
+        List<Element> collected = new ArrayList<Element>(elements);
+        for(Element element : elements) {
+            collected.addAll(element.getChildElements());
+        }
+
+        return collected;
     }
 
     public void addElementToCircuit(Element element) {
-        circuit.addElementToCircuit(element);
+        elements.add(element);
         notifyObservers();
     }
 
-    public String getState() {
-        return circuit.toString();
+    public void addElementToCircuit(Element parentElement, Element element) {
+        parentElement.addChildElement(element);
+        notifyObservers();
     }
-
-    public Circuit getCircuit() {
-        return circuit;
-    };
 
     public void addObserver(CircuitObserver observer) {
         observers.add(observer);
