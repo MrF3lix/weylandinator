@@ -33,7 +33,7 @@
                            </padding>
                         </Label>
                         <Canvas fx:id="canvas" height="700.0" width="700.0" />
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="775.0" text="Solve">
+                        <Button fx:id="solve" mnemonicParsing="false" onAction="#solve_onAction" prefHeight="25.0" prefWidth="775.0" text="Solve">
                            <VBox.margin>
                               <Insets left="10.0" right="10.0" />
                            </VBox.margin>
