@@ -22,16 +22,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 
 public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
     private GraphicsContext gc;
-
-    @FXML
-    private TextArea output;
 
     @FXML
     private ChoiceBox<ElementType> elementType;
@@ -59,7 +55,6 @@ public class MainController implements Initializable, CircuitObserver {
      */
     @Override
     public void updated() {
-        updateOutput();
         updateElements();
         displayCircuit();
     }
@@ -142,7 +137,7 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void delete_onAction() {
         try {
-            boolean success = stateManager.deleteElementByName(selectedElement.getName());
+            stateManager.deleteElementByName(selectedElement.getName());
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -163,10 +158,6 @@ public class MainController implements Initializable, CircuitObserver {
 
         resultCurrent = calculator.solve(formula, variableMap, "U");
         updated();
-    }
-
-    public void updateOutput() {
-        // output.setText(stateManager.getState());
     }
 
     public void updateSelectedElementValue() {
