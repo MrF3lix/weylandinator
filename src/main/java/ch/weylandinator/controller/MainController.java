@@ -72,12 +72,21 @@ public class MainController implements Initializable {
 
         updateOutput();
         updateElements();
+        displayCircuit();
     }
 
     public void update_onAction() {
         selectedElement.setResistance(Integer.parseInt(resistance.getText()));
         selectedElement.setVoltage(Integer.parseInt(voltage.getText()));
         selectedElement.setCurrent(Integer.parseInt(current.getText()));
+    }
+
+    public void delete_onAction() {
+        stateManager.getCircuit().removeElementFromCircuit(selectedElement.getName());
+
+        updateOutput();
+        updateElements();
+        displayCircuit();
     }
 
     public void updateOutput() {
@@ -121,6 +130,8 @@ public class MainController implements Initializable {
     }
     
     public void displayCircuit(){
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
         List<Element> elements = stateManager.getCircuit().getElements();
 
         for (int i = 0; i < elements.size(); i++) {
