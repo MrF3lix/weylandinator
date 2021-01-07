@@ -192,16 +192,16 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     public void showCircuitInformation() {
-        gc.strokeText("U - Spannung: ??? V", 10, 10);
-        gc.strokeText("R - Wiederstand: ??? Ohm", 10, 30);
-        gc.strokeText("I - Strom: "+resultCurrent+" A", 10, 50);
+        gc.fillText("U - Spannung: ??? V", 10, 10);
+        gc.fillText("R - Wiederstand: ??? Ohm", 10, 30);
+        gc.fillText("I - Strom: "+resultCurrent+" A", 10, 50);
     }
 
     public void displayElement(Point point, String name) {
         int width = 100;
         int height = 30;
         gc.strokeRoundRect(point.x - width / 2, point.y - height / 2, width, height, 10, 10);
-        gc.strokeText(name, point.x - width / 2 + 5, point.y - height / 2 + 20);
+        gc.fillText(name, point.x - width / 2 + 5, point.y - height / 2 + 20);
     }
 
     /**
