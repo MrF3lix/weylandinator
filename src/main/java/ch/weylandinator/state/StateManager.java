@@ -6,14 +6,13 @@ import ch.weylandinator.model.Element;
 public class StateManager {
 
     private static StateManager instance = null;
-    
-    public static StateManager getInstance() 
-    { 
-        if (instance == null) 
-        instance = new StateManager(); 
-  
-        return instance; 
-    } 
+
+    public static StateManager getInstance() {
+        if (instance == null)
+            instance = new StateManager();
+
+        return instance;
+    }
 
     private Circuit circuit;
 
@@ -32,6 +31,8 @@ public class StateManager {
     public String getState() {
         return circuit.toString();
     }
-    
-    public Circuit getCircuit(){return circuit;};
+
+    public Circuit getCircuit() {
+        return circuit;
+    };
 }

@@ -55,7 +55,8 @@ public class Calculator
 
     private String dissolveByVariable(String form, String variable)
     {
-        return new ShuntingYardAlgorithm().shuntingYard(form);
+        return "";
+        //return new ShuntingYardAlgorithm().shuntingYard(form);
     }
 
     private int getEqualsLocation(Formula formula)
