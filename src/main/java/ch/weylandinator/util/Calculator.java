@@ -1,9 +1,9 @@
 package ch.weylandinator.util;
 
-import ch.weylandinator.model.Circuit;
 import ch.weylandinator.model.Element;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * Greek Symobls
@@ -45,10 +45,10 @@ public class Calculator
         return 0;
     }
 
-    public Circuit solveCircuit(Circuit circuit)
+    public List<Element> solveCircuit(List<Element> elementList)
     {
 
-        for (Element element : circuit.getElements()) {
+        for (Element element : elementList) {
 
             double result;
 

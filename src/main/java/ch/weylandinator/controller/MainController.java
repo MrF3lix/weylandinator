@@ -153,7 +153,7 @@ public class MainController implements Initializable, CircuitObserver {
         
         // ---> 
         
-        calculator.solveCircuit(stateManager.getCircuit());
+        calculator.solveCircuit(stateManager.getAllElements());
         
 
         Formula formula = Formula.URI;
