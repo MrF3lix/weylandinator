@@ -1,6 +1,7 @@
 package ch.weylandinator.state;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ch.weylandinator.model.Element;
@@ -33,7 +34,6 @@ public class StateManager {
         for(Element element : this.elements) {
             if(name.equals(element.getName())) {
                 elementFound = element;
-                return elementFound;
             } else {
                 elementFound = findElementByName(element.getChildElements(), name);
             }
@@ -48,7 +48,6 @@ public class StateManager {
         for(Element element : elements) {
             if(name.equals(element.getName())) {
                 elementFound = element;
-                return elementFound;
             } else {
                 elementFound = findElementByName(element.getChildElements(), name);
             }
@@ -73,6 +72,42 @@ public class StateManager {
         }
 
         return collected;
+    }
+
+    public boolean deleteElementByName(String elementName) {
+        boolean success = false;
+
+        Iterator<Element> it = this.elements.iterator();
+        while(it.hasNext()) {
+            Element next = it.next();
+
+            if(elementName.equals(next.getName())) {
+                it.remove();
+                notifyObservers();
+                success = true;
+            } else {
+                success = deleteElementByName(elementName, next.getChildElements());
+            }
+        }
+        return success;
+    }
+
+    public boolean deleteElementByName(String elementName, List<Element> elements) {
+        boolean success = false;
+
+        Iterator<Element> it = elements.iterator();
+        while(it.hasNext()) {
+            Element next = it.next();
+
+            if(elementName.equals(next.getName())) {
+                it.remove();
+                notifyObservers();
+                success = true;
+            } else {
+                success = deleteElementByName(elementName, next.getChildElements());
+            }
+        }
+        return success;
     }
 
     public void addElementToCircuit(Element element) {

@@ -88,8 +88,6 @@ public class MainController implements Initializable, CircuitObserver {
             Element newElement = new Element();
             newElement.setName(name.getText());
             newElement.setType(elementType.getSelectionModel().getSelectedItem());
-            newElement.setStartPosition(Integer.parseInt(start.getText()));
-            newElement.setEndPosition(Integer.parseInt(end.getText()));
 
             String parentElementName = availableElements.getSelectionModel().getSelectedItem();
             Element parentElement = stateManager.findElementByName(parentElementName);
@@ -115,15 +113,13 @@ public class MainController implements Initializable, CircuitObserver {
             }
 
             name.clear();
-            start.clear();
-            end.clear();
             elementValue.clear();
 
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
             alert.setHeaderText("Something went wrong!");
-            alert.setContentText("Make sure to only use numeric values on the Start, End, and Value field.");
+            alert.setContentText("Make sure to only use numeric values on the Value field.");
 
             alert.showAndWait();
         }
@@ -146,8 +142,7 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void delete_onAction() {
         try {
-            // stateManager.removeElementFromCircuit(selectedElement.getName());
-
+            boolean success = stateManager.deleteElementByName(selectedElement.getName());
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -235,16 +230,12 @@ public class MainController implements Initializable, CircuitObserver {
         Element e1 = new Element();
         e1.setName("Voltage Source");
         e1.setType(ElementType.VOLTAGE_SOURCE);
-        e1.setStartPosition(1);
-        e1.setEndPosition(2);
         stateManager.addElementToCircuit(e1);
 
         Element e2 = new Element();
         e2.setName("Resistor");
         e2.setType(ElementType.RESISTOR);
-        e2.setStartPosition(2);
-        e2.setEndPosition(3);
-        stateManager.addElementToCircuit(e2);
+        stateManager.addElementToCircuit(e1, e2);
 
         // Element e3 = new Element();
         // e3.setName("RESISTOR 2");
