@@ -153,11 +153,12 @@ public class MainController implements Initializable, CircuitObserver {
     public void solve_onAction() {
         Calculator calculator = new Calculator();
 
+        Formula formula = Formula.URI;
         Map<String, Double> variableMap = new HashMap<>();
         variableMap.put("R", 1.4);
         variableMap.put("I", 100.0);
         
-        double result = calculator.solve(Formula.URI, variableMap, "U");
+        double result = calculator.solve(formula, variableMap, "U");
     }
 
     public void updateOutput() {
