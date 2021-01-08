@@ -1,13 +1,5 @@
 package ch.weylandinator.controller;
 
-import java.awt.Point;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-
 import ch.weylandinator.model.Element;
 import ch.weylandinator.model.ElementType;
 import ch.weylandinator.state.CircuitObserver;
@@ -21,11 +13,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 
-public class MainController implements Initializable, CircuitObserver {
+import java.awt.*;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
+import static ch.weylandinator.model.ElementType.RESISTOR;
+import static ch.weylandinator.model.ElementType.VOLTAGE_SOURCE;
+
+public class MainController implements Initializable, CircuitObserver
+{
     private StateManager stateManager = StateManager.getInstance();
     private GraphicsContext gc;
 
@@ -223,17 +227,17 @@ public class MainController implements Initializable, CircuitObserver {
     private void fillCircuit() {
         Element e1 = new Element();
         e1.setName("Voltage Source");
-        e1.setType(ElementType.VOLTAGE_SOURCE);
+        e1.setType(VOLTAGE_SOURCE);
         stateManager.addElementToCircuit(e1);
 
         Element r1 = new Element();
         r1.setName("r1");
-        r1.setType(ElementType.RESISTOR);
+        r1.setType(RESISTOR);
         stateManager.addElementToCircuit("Voltage Source", r1);
 
         Element r2 = new Element();
         r2.setName("r2");
-        r2.setType(ElementType.RESISTOR);
+        r2.setType(RESISTOR);
         stateManager.addElementToCircuit("r1", r2);
     }
 }
