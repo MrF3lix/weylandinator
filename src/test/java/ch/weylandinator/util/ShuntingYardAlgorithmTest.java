@@ -32,7 +32,7 @@ class ShuntingYardAlgorithmTest
     {
         for(Map.Entry<String, String> entry : inputVSExpected.entrySet())
         {
-            assertEquals(entry.getValue(),execShuntingYard(entry.getKey()));
+            assertEquals(entry.getValue(), execShuntingYard(entry.getKey()));
         }
     }
     

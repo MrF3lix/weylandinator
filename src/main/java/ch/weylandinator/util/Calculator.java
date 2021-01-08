@@ -2,7 +2,11 @@ package ch.weylandinator.util;
 
 import ch.weylandinator.model.Element;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Greek Symobls
@@ -209,10 +213,10 @@ public class Calculator
         String formulaRightNew = "";
         String formulaLeftNew = String.join(" ",formulaLeft) + " ";
         for (String string : summandList) {
-            if (string.contains("[a-zA-Z]")) {
+            if (Pattern.compile(".*[a-zA-Z].*").matcher(string).matches()) {
                 formulaRightNew = string;
             } else {
-                string.replaceAll("\\+", "-");
+                string = string.replaceAll("\\+", "-");
                 formulaLeftNew += string + " ";
             }
         }
