@@ -19,7 +19,7 @@ class CalculatorTest
         System.out.println(formulaTuple.formulaRight.substring(0,formulaTuple.formulaRight.length() - 1) + "= " + formulaTuple.formulatLeft);
         
         EvaluateReversePolishNotation evaluateReversePolishNotation = new EvaluateReversePolishNotation();
-        int result = evaluateReversePolishNotation.solvePolishReverseNotation(formulaTuple.formulaRight + " = " + formulaTuple.formulatLeft);
+        int result = evaluateReversePolishNotation.solvePolishReverseNotation(formulaTuple.formulatLeft);
         
         assertEquals(-2,result);
     }
