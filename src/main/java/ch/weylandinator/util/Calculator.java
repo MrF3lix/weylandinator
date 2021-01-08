@@ -182,7 +182,10 @@ public class Calculator
         int startIndex = formulaRight.length - 1;
         boolean wasOperator = true;
 
-        //Summands -> ArrayList
+        //Summands -> ArrayList 1 = 3 + X / 2 ---> [3 +] [X 2 / +]
+        // X 2 /
+        // + <-> -
+        // * <-> /
         String currentSummand = "+";
         for (int i = formulaRight.length - 2; i >= 0; i--) {
 

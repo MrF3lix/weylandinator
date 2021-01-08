@@ -20,6 +20,12 @@ class ShuntingYardAlgorithmTest
         ,"B + C / D",               "B C D / +"
         ,"A + B / (C - D)",         "A B C D - / +"
         ,"A + B / (C - D) + E * F", "A B C D - / + E F * +"
+        ,"B / (C - D) + E * F",     "B C D - / E F * +"
+        ,"B / C - D + E * F",       "B C / D - E F * +"
+    );
+
+    Map<String, String> inputVSExpected2 = Map.of(
+        "(B + C) / D",                "B C + D /"
     );
 
     @BeforeEach
@@ -31,6 +37,11 @@ class ShuntingYardAlgorithmTest
     void execAll()
     {
         for(Map.Entry<String, String> entry : inputVSExpected.entrySet())
+        {
+            assertEquals(entry.getValue(), execShuntingYard(entry.getKey()));
+        }
+
+        for(Map.Entry<String, String> entry : inputVSExpected2.entrySet())
         {
             assertEquals(entry.getValue(), execShuntingYard(entry.getKey()));
         }
