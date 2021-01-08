@@ -1,14 +1,26 @@
 package ch.weylandinator.util;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 class ShuntingYardAlgorithmTest
 {
 
     ShuntingYardAlgorithm shuntingYardAlgorithm = new ShuntingYardAlgorithm();
+    
+    Map<String, String> inputVSExpected = Map.of(
+        "B + C + D",                "B C + D +"
+        ,"B - C",                   "B C -"
+        ,"B * C",                   "B C *"
+        ,"B / C",                   "B C /"
+        ,"B + C * D",               "B C D * +"
+        ,"B + C / D",               "B C D / +"
+        ,"A + B / (C - D)",         "A B C D - / +"
+        ,"A + B / (C - D) + E * F", "A B C D - / + E F * +"
+    );
 
     @BeforeEach
     void setUp()
@@ -16,66 +28,15 @@ class ShuntingYardAlgorithmTest
     }
 
     @Test
-    @Disabled
-    void sum()
+    void execAll()
     {
-        assertEquals("A = B C +",shuntingYardAlgorithm.shuntingYard("A = B + C"));
-    }
-
-    @Test
-    @Disabled
-    void difference()
-    {
-        assertEquals("A = B C -",shuntingYardAlgorithm.shuntingYard("A = B - C"));
-    }
-
-    @Test
-    @Disabled
-    void product()
-    {
-        assertEquals("A = B C *",shuntingYardAlgorithm.shuntingYard("A = B * C"));
-    }
-
-    @Test
-    @Disabled
-    void quotient()
-    {
-        assertEquals("A = B C /",shuntingYardAlgorithm.shuntingYard("A = B / C"));
-    }
-
-    @Test
-    @Disabled
-    void sumAndProduct()
-    {
-        assertEquals("A = B C *",shuntingYardAlgorithm.shuntingYard("A = B + C * D"));
-    }
-
-    @Test
-    @Disabled
-    void sumAndProduct2()
-    {
-        assertEquals("A = B C *",shuntingYardAlgorithm.shuntingYard("A = B * C + D"));
-    }
-
-    @Test
-    @Disabled
-    void sumAndQuotient()
-    {
-        assertEquals("A = B C /",shuntingYardAlgorithm.shuntingYard("A = B + C / D"));
-    }
-
-    @Test
-    @Disabled
-    void sumAndQuotientMore()
-    {
-        assertEquals("A = B C /",shuntingYardAlgorithm.shuntingYard("A + B / (C - D)"));
+        for(Map.Entry<String, String> entry : inputVSExpected.entrySet())
+        {
+            assertEquals(entry.getValue(),execShuntingYard(entry.getKey()));
+        }
     }
     
-    @Test
-    @Disabled
-    void sumAndQuotientMore2()
-    {
-        //A B C D - / + E F * +     ---> [A] [B / (C - D)] [E * F]
-        assertEquals("A = B C /",shuntingYardAlgorithm.shuntingYard("A + B / (C - D) + E * F"));
+    private String execShuntingYard(String string){
+        return StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(string));
     }
 }

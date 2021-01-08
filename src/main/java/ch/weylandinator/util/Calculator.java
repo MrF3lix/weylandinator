@@ -2,10 +2,7 @@ package ch.weylandinator.util;
 
 import ch.weylandinator.model.Element;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Greek Symobls
@@ -115,7 +112,7 @@ public class Calculator
         return value == 0d;
     }
 
-    private String dissolveByVariable(String form, String variable)
+    public FormulaTuple dissolveByVariable(String form, String variable)
     {
         //3 = 2 + X     ---> - Summand
         //3 = 10 - X    ---> + X
@@ -147,7 +144,7 @@ public class Calculator
         String[] formulaLeft = shuntingYardLeft.split(" ");
         String[] formulaRight = shuntingYardRight.split(" ");
 
-        FormulaTuple formulaTuple;
+        FormulaTuple formulaTuple = null;
         
         switch (getLast(formulaRight)) {
             case "+":
@@ -162,7 +159,7 @@ public class Calculator
                 break;
         }
 
-        return "";
+        return formulaTuple;
     }
 
     private void divideAllExceptUnknown(String[] formulaRight)
@@ -183,7 +180,7 @@ public class Calculator
 
         //Summands -> ArrayList
         String currentSummand = "+";
-        for (int i = formulaRight.length - 2; i <= 0; i--) {
+        for (int i = formulaRight.length - 2; i >= 0; i--) {
 
             if (isOperator(formulaRight[i])) {
                 if (!wasOperator) {
@@ -210,15 +207,16 @@ public class Calculator
 
         //Subtract
         String formulaRightNew = "";
-        String formulaLeftNew = formulaLeft.toString();
+        String formulaLeftNew = String.join(" ",formulaLeft) + " ";
         for (String string : summandList) {
             if (string.contains("[a-zA-Z]")) {
                 formulaRightNew = string;
             } else {
-                string.replaceAll("+", "-");
-                formulaLeftNew += string;
+                string.replaceAll("\\+", "-");
+                formulaLeftNew += string + " ";
             }
         }
+        formulaLeftNew = StringOperation.removeDuplicateSpaces(formulaLeftNew);
         return new FormulaTuple(formulaLeftNew, formulaRightNew);
     }
 
