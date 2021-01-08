@@ -177,6 +177,25 @@ public class Calculator
     private FormulaTuple subtractAllExceptUnknown(String[] formulaRight, String[] formulaLeft)
     {
         // Right to Left
+        List<String> summandList = getSummandList(formulaRight);
+
+        //Subtract
+        String formulaRightNew = "";
+        String formulaLeftNew = String.join(" ",formulaLeft) + " ";
+        for (String string : summandList) {
+            if (Pattern.compile(".*[a-zA-Z].*").matcher(string).matches()) {
+                formulaRightNew = string;
+            } else {
+                string = string.replaceAll("\\+", "-");
+                formulaLeftNew += string + " ";
+            }
+        }
+        formulaLeftNew = StringOperation.removeDuplicateSpaces(formulaLeftNew);
+        return new FormulaTuple(formulaLeftNew, formulaRightNew);
+    }
+
+    private List<String> getSummandList(String[] formulaRight)
+    {
         List<String> summandList = new ArrayList<>();
         int operatorCount = 1;
         int startIndex = formulaRight.length - 1;
@@ -211,20 +230,7 @@ public class Calculator
                 wasOperator = false;
             }
         }
-
-        //Subtract
-        String formulaRightNew = "";
-        String formulaLeftNew = String.join(" ",formulaLeft) + " ";
-        for (String string : summandList) {
-            if (Pattern.compile(".*[a-zA-Z].*").matcher(string).matches()) {
-                formulaRightNew = string;
-            } else {
-                string = string.replaceAll("\\+", "-");
-                formulaLeftNew += string + " ";
-            }
-        }
-        formulaLeftNew = StringOperation.removeDuplicateSpaces(formulaLeftNew);
-        return new FormulaTuple(formulaLeftNew, formulaRightNew);
+        return summandList;
     }
 
     private boolean isOperator(String string)
