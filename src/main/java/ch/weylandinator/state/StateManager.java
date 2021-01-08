@@ -1,10 +1,9 @@
 package ch.weylandinator.state;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import ch.weylandinator.model.Element;
+import ch.weylandinator.model.CircuitElement;
 
 public class StateManager {
 
@@ -19,20 +18,20 @@ public class StateManager {
 
     private List<CircuitObserver> observers = new ArrayList<>();
 
-    private Element rootElement = new Element("#ROOT");
+    private CircuitElement rootElement = new CircuitElement("#ROOT");
 
     public StateManager() {
         notifyObservers();
     }
 
-    public Element findElementByName(String name) {
+    public CircuitElement findElementByName(String name) {
         return findElementByName(rootElement.getChildElements(), name);
     }
 
-    private Element findElementByName(List<Element> elements, String name) {
-        Element elementFound = null;
+    private CircuitElement findElementByName(List<CircuitElement> elements, String name) {
+        CircuitElement elementFound = null;
 
-        for(Element element : elements) {
+        for(CircuitElement element : elements) {
             if(name.equals(element.getName())) {
                 elementFound = element;
             } else {
@@ -43,14 +42,14 @@ public class StateManager {
         return elementFound;
     }
 
-    public List<Element> getAllElements() {
+    public List<CircuitElement> getAllElements() {
         return getAllElements(rootElement.getChildElements());
     }
 
-    private List<Element> getAllElements(List<Element> elements) {
-        List<Element> collected = new ArrayList<Element>(elements);
+    private List<CircuitElement> getAllElements(List<CircuitElement> elements) {
+        List<CircuitElement> collected = new ArrayList<CircuitElement>(elements);
 
-        for(Element element : elements) {
+        for(CircuitElement element : elements) {
             if(element.getChildElements().size() > 0) {
                 collected.addAll(getAllElements(element.getChildElements()));
             }
@@ -64,13 +63,13 @@ public class StateManager {
         notifyObservers();
     }
 
-    public void addElementToCircuit(Element element) {
+    public void addElementToCircuit(CircuitElement element) {
         rootElement.addChildElement(element);
         notifyObservers();
     }
 
-    public void addElementToCircuit(String parentElementName, Element element) {
-        Element parentElement = findElementByName(parentElementName);
+    public void addElementToCircuit(String parentElementName, CircuitElement element) {
+        CircuitElement parentElement = findElementByName(parentElementName);
         parentElement.addChildElement(element);
 
         notifyObservers();

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Element {
-    private ElementType type;
+public class CircuitElement {
+    private CircuitElementType type;
     private String name;
 
     // Volt
@@ -17,19 +17,19 @@ public class Element {
     // Ohm
     private int resistance;
 
-    private List<Element> childElements = new ArrayList<>();
+    private List<CircuitElement> childElements = new ArrayList<>();
 
-    public Element() {}
+    public CircuitElement() {}
 
-    public Element(String name) {
+    public CircuitElement(String name) {
         this.name = name;
     }
 
-    public ElementType getType() {
+    public CircuitElementType getType() {
         return type;
     }
 
-    public void setType(ElementType type) {
+    public void setType(CircuitElementType type) {
         this.type = type;
     }
 
@@ -65,18 +65,18 @@ public class Element {
         this.resistance = resistance;
     } 
 
-    public void addChildElement(Element element) {
+    public void addChildElement(CircuitElement element) {
         childElements.add(element);
     }
 
     public void deleteChildElement(String elementName) {
-        for (Element childElement : childElements) {
+        for (CircuitElement childElement : childElements) {
             childElement.deleteChildElement(elementName);
         }
 
-        Iterator<Element> it = childElements.iterator();
+        Iterator<CircuitElement> it = childElements.iterator();
         while(it.hasNext()) {
-            Element next = it.next();
+            CircuitElement next = it.next();
 
             if(elementName.equals(next.getName())) {
                 it.remove();
@@ -84,7 +84,7 @@ public class Element {
         }
     }
 
-    public List<Element> getChildElements() {
+    public List<CircuitElement> getChildElements() {
         return childElements;
     }
 }

@@ -1,7 +1,7 @@
 package ch.weylandinator.controller;
 
-import ch.weylandinator.model.Element;
-import ch.weylandinator.model.ElementType;
+import ch.weylandinator.model.CircuitElement;
+import ch.weylandinator.model.CircuitElementType;
 import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
 import ch.weylandinator.util.Calculator;
@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static ch.weylandinator.model.ElementType.RESISTOR;
-import static ch.weylandinator.model.ElementType.VOLTAGE_SOURCE;
+import static ch.weylandinator.model.CircuitElementType.RESISTOR;
+import static ch.weylandinator.model.CircuitElementType.VOLTAGE_SOURCE;
 
 public class MainController implements Initializable, CircuitObserver
 {
@@ -34,7 +34,7 @@ public class MainController implements Initializable, CircuitObserver
     private GraphicsContext gc;
 
     @FXML
-    private ChoiceBox<ElementType> elementType;
+    private ChoiceBox<CircuitElementType> elementType;
 
     @FXML
     private ChoiceBox<String> elementNames, availableElements;
@@ -45,7 +45,7 @@ public class MainController implements Initializable, CircuitObserver
     @FXML
     private Canvas canvas;
 
-    private Element selectedElement;
+    private CircuitElement selectedElement;
 
     private double resultCurrent;
 
@@ -65,7 +65,7 @@ public class MainController implements Initializable, CircuitObserver
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        elementType.getItems().setAll(ElementType.values());
+        elementType.getItems().setAll(CircuitElementType.values());
         elementType.getSelectionModel().selectFirst();
 
         gc = canvas.getGraphicsContext2D();
@@ -84,7 +84,7 @@ public class MainController implements Initializable, CircuitObserver
 
     public void add_onAction() {
         try {
-            Element newElement = new Element();
+            CircuitElement newElement = new CircuitElement();
             newElement.setName(name.getText());
             newElement.setType(elementType.getSelectionModel().getSelectedItem());
 
@@ -185,7 +185,7 @@ public class MainController implements Initializable, CircuitObserver
 
         showCircuitInformation();
 
-        List<Element> elements = stateManager.getAllElements();
+        List<CircuitElement> elements = stateManager.getAllElements();
 
         for (int i = 0; i < elements.size(); i++) {
             displayElement(getCanvasPosition(i), elements.get(i).getName());
@@ -225,17 +225,17 @@ public class MainController implements Initializable, CircuitObserver
 
     // for testing
     private void fillCircuit() {
-        Element e1 = new Element();
+        CircuitElement e1 = new CircuitElement();
         e1.setName("Voltage Source");
         e1.setType(VOLTAGE_SOURCE);
         stateManager.addElementToCircuit(e1);
 
-        Element r1 = new Element();
+        CircuitElement r1 = new CircuitElement();
         r1.setName("r1");
         r1.setType(RESISTOR);
         stateManager.addElementToCircuit("Voltage Source", r1);
 
-        Element r2 = new Element();
+        CircuitElement r2 = new CircuitElement();
         r2.setName("r2");
         r2.setType(RESISTOR);
         stateManager.addElementToCircuit("r1", r2);

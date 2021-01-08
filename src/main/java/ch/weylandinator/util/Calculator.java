@@ -1,6 +1,6 @@
 package ch.weylandinator.util;
 
-import ch.weylandinator.model.Element;
+import ch.weylandinator.model.CircuitElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,10 +48,10 @@ public class Calculator
         return 0;
     }
 
-    public List<Element> solveCircuit(List<Element> elementList)
+    public List<CircuitElement> solveCircuit(List<CircuitElement> elementList)
     {
 
-        for (Element element : elementList) {
+        for (CircuitElement element : elementList) {
 
             double result;
 
