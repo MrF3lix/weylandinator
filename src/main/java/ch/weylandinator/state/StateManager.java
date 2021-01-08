@@ -18,31 +18,18 @@ public class StateManager {
     }
 
     private List<CircuitObserver> observers = new ArrayList<>();
-    private List<Element> elements = new ArrayList<>();
+
+    private Element rootElement = new Element("#ROOT");
 
     public StateManager() {
         notifyObservers();
     }
 
-    public List<Element> getElements() {
-        return elements;
-    }
-
     public Element findElementByName(String name) {
-        Element elementFound = null;
-
-        for(Element element : this.elements) {
-            if(name.equals(element.getName())) {
-                elementFound = element;
-            } else {
-                elementFound = findElementByName(element.getChildElements(), name);
-            }
-        }
-
-        return elementFound;
+        return findElementByName(rootElement.getChildElements(), name);
     }
 
-    public Element findElementByName(List<Element> elements, String name) {
+    private Element findElementByName(List<Element> elements, String name) {
         Element elementFound = null;
 
         for(Element element : elements) {
@@ -57,66 +44,35 @@ public class StateManager {
     }
 
     public List<Element> getAllElements() {
-        List<Element> collected = new ArrayList<Element>(this.elements);
-        for(Element element : this.elements) {
-            collected.addAll(element.getChildElements());
-        }
-
-        return collected;
+        return getAllElements(rootElement.getChildElements());
     }
 
-    public List<Element> getAllElements(List<Element> elements) {
+    private List<Element> getAllElements(List<Element> elements) {
         List<Element> collected = new ArrayList<Element>(elements);
+
         for(Element element : elements) {
-            collected.addAll(element.getChildElements());
+            if(element.getChildElements().size() > 0) {
+                collected.addAll(getAllElements(element.getChildElements()));
+            }
         }
 
         return collected;
     }
 
-    public boolean deleteElementByName(String elementName) {
-        boolean success = false;
-
-        Iterator<Element> it = this.elements.iterator();
-        while(it.hasNext()) {
-            Element next = it.next();
-
-            if(elementName.equals(next.getName())) {
-                it.remove();
-                notifyObservers();
-                success = true;
-            } else {
-                success = deleteElementByName(elementName, next.getChildElements());
-            }
-        }
-        return success;
-    }
-
-    public boolean deleteElementByName(String elementName, List<Element> elements) {
-        boolean success = false;
-
-        Iterator<Element> it = elements.iterator();
-        while(it.hasNext()) {
-            Element next = it.next();
-
-            if(elementName.equals(next.getName())) {
-                it.remove();
-                notifyObservers();
-                success = true;
-            } else {
-                success = deleteElementByName(elementName, next.getChildElements());
-            }
-        }
-        return success;
-    }
-
-    public void addElementToCircuit(Element element) {
-        elements.add(element);
+    public void deleteElementByName(String elementName) {
+        rootElement.deleteChildElement(elementName);
         notifyObservers();
     }
 
-    public void addElementToCircuit(Element parentElement, Element element) {
+    public void addElementToCircuit(Element element) {
+        rootElement.addChildElement(element);
+        notifyObservers();
+    }
+
+    public void addElementToCircuit(String parentElementName, Element element) {
+        Element parentElement = findElementByName(parentElementName);
         parentElement.addChildElement(element);
+
         notifyObservers();
     }
 

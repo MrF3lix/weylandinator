@@ -1,13 +1,12 @@
 package ch.weylandinator.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Element {
     private ElementType type;
     private String name;
-    private int startPosition;
-    private int endPosition;
 
     // Volt
     private int voltage;
@@ -21,6 +20,10 @@ public class Element {
     private List<Element> childElements = new ArrayList<>();
 
     public Element() {}
+
+    public Element(String name) {
+        this.name = name;
+    }
 
     public ElementType getType() {
         return type;
@@ -37,22 +40,6 @@ public class Element {
     public void setName(String name) {
         this.name = name;
     }
-
-    public int getStartPosition() {
-        return startPosition;
-    }
-
-    public void setStartPosition(int startPosition) {
-        this.startPosition = startPosition;
-    } 
-
-    public int getEndPosition() {
-        return endPosition;
-    }
-
-    public void setEndPosition(int endPosition) {
-        this.endPosition = endPosition;
-    } 
 
     public int getVoltage() {
         return voltage;
@@ -80,6 +67,21 @@ public class Element {
 
     public void addChildElement(Element element) {
         childElements.add(element);
+    }
+
+    public void deleteChildElement(String elementName) {
+        for (Element childElement : childElements) {
+            childElement.deleteChildElement(elementName);
+        }
+
+        Iterator<Element> it = childElements.iterator();
+        while(it.hasNext()) {
+            Element next = it.next();
+
+            if(elementName.equals(next.getName())) {
+                it.remove();
+            }
+        }
     }
 
     public List<Element> getChildElements() {

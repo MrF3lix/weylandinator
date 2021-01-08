@@ -84,9 +84,6 @@ public class MainController implements Initializable, CircuitObserver {
             newElement.setName(name.getText());
             newElement.setType(elementType.getSelectionModel().getSelectedItem());
 
-            String parentElementName = availableElements.getSelectionModel().getSelectedItem();
-            Element parentElement = stateManager.findElementByName(parentElementName);
-
             switch (newElement.getType()) {
                 case RESISTOR:
                     newElement.setResistance(Integer.parseInt(elementValue.getText()));
@@ -101,10 +98,11 @@ public class MainController implements Initializable, CircuitObserver {
                     break;
             }
 
-            if(parentElement == null) {
-                stateManager.addElementToCircuit(newElement);
+            String parentElementName = availableElements.getSelectionModel().getSelectedItem();
+            if(parentElementName != null) {
+                stateManager.addElementToCircuit(parentElementName, newElement);
             } else {
-                stateManager.addElementToCircuit(parentElement, newElement);
+                stateManager.addElementToCircuit(newElement);
             }
 
             name.clear();
@@ -165,20 +163,20 @@ public class MainController implements Initializable, CircuitObserver {
         updated();
     }
 
-    public void updateSelectedElementValue() {
+    private void updateSelectedElementValue() {
         resistance.setText(String.valueOf(selectedElement.getResistance()));
         voltage.setText(String.valueOf(selectedElement.getVoltage()));
         current.setText(String.valueOf(selectedElement.getCurrent()));
     }
 
-    public void updateElements() {
+    private void updateElements() {
         elementNames.getItems().setAll(
                 stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
         availableElements.getItems().setAll(
             stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
     }
 
-    public void displayCircuit() {
+    private void displayCircuit() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         showCircuitInformation();
@@ -191,13 +189,13 @@ public class MainController implements Initializable, CircuitObserver {
 
     }
 
-    public void showCircuitInformation() {
+    private void showCircuitInformation() {
         gc.fillText("U - Spannung: ??? V", 10, 10);
         gc.fillText("R - Wiederstand: ??? Ohm", 10, 30);
         gc.fillText("I - Strom: " + resultCurrent + " A", 10, 50);
     }
 
-    public void displayElement(Point point, String name) {
+    private void displayElement(Point point, String name) {
         int width = 100;
         int height = 30;
         gc.strokeRoundRect(point.x - width / 2, point.y - height / 2, width, height, 10, 10);
@@ -212,7 +210,7 @@ public class MainController implements Initializable, CircuitObserver {
      * @param index
      * @return Point The coordinates
      */
-    public Point getCanvasPosition(int index) {
+    private Point getCanvasPosition(int index) {
         int gridSize = 4;
 
         int size = (int) canvas.getHeight();
@@ -228,30 +226,14 @@ public class MainController implements Initializable, CircuitObserver {
         e1.setType(ElementType.VOLTAGE_SOURCE);
         stateManager.addElementToCircuit(e1);
 
-        Element e2 = new Element();
-        e2.setName("Resistor");
-        e2.setType(ElementType.RESISTOR);
-        stateManager.addElementToCircuit(e1, e2);
+        Element r1 = new Element();
+        r1.setName("r1");
+        r1.setType(ElementType.RESISTOR);
+        stateManager.addElementToCircuit("Voltage Source", r1);
 
-        // Element e3 = new Element();
-        // e3.setName("RESISTOR 2");
-        // e3.setType(ElementType.RESISTOR);
-        // e3.setStartPosition(3);
-        // e3.setEndPosition(4);
-        // stateManager.addElementToCircuit(e3);
-
-        // Element e4 = new Element();
-        // e4.setName("RESISTOR 3");
-        // e4.setType(ElementType.RESISTOR);
-        // e4.setStartPosition(4);
-        // e4.setEndPosition(5);
-        // stateManager.addElementToCircuit(e4);
-
-        // Element e5 = new Element();
-        // e5.setName("RESISTOR 4");
-        // e5.setType(ElementType.RESISTOR);
-        // e5.setStartPosition(3);
-        // e5.setEndPosition(5);
-        // stateManager.addElementToCircuit(e5);
+        Element r2 = new Element();
+        r2.setName("r2");
+        r2.setType(ElementType.RESISTOR);
+        stateManager.addElementToCircuit("r1", r2);
     }
 }
