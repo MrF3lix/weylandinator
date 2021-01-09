@@ -49,33 +49,36 @@ By Default there's a RootElement that stores all the other elements.
 This sample shows a circuit with two parallel resistors and a single voltage source.
 
 ```JSON
-"circuit": {
-    "name": "RootElement"
-    "childElement": [
-        {
-            "type": "CircuitElementType.VoltageSource",
-            "name": "U_0",
-            "voltage": 5,
-            "current": 0,
-            "resistance": 0,
-            "childElement": [
-                {
-                    "type": "CircuitElementType.Resistor",
-                    "name": "R_1",
-                    "voltage": 0,
-                    "current": 0,
-                    "resistance": 1000,
-                    "childElement": []
-                },
-                {
-                    "type": "CircuitElementType.Resistor",
-                    "name": "R_2",
-                    "voltage": 0,
-                    "current": 0,
-                    "resistance": 500,
-                    "childElement": []
-                }
-            ]
-        }
-    ]
+{
+    "circuit": {
+        "name": "RootElement",
+        "childElements": [
+            {
+                "type": "CircuitElementType.VoltageSource",
+                "name": "U_0",
+                "voltage": 5,
+                "current": 0,
+                "resistance": 0,
+                "childElements": [
+                    {
+                        "type": "CircuitElementType.Resistor",
+                        "name": "R_1",
+                        "voltage": 0,
+                        "current": 0,
+                        "resistance": 1000,
+                        "childElements": []
+                    },
+                    {
+                        "type": "CircuitElementType.Resistor",
+                        "name": "R_2",
+                        "voltage": 0,
+                        "current": 0,
+                        "resistance": 500,
+                        "childElements": []
+                    }
+                ]
+            }
+        ]
+    }
 }
+```
