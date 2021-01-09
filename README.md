@@ -6,93 +6,76 @@
 
 ![Weylandinator](./img/weylandinator-logo.png)
 
-## PoC - Schaltung
+The Weylandinator is a tool to simulate circuits with voltage sources, resistors and loads.
 
-- UI
-  - Schaltung definieren
-    - Spannungsquelle
-    - Wiederstände
-    - Verbraucher
-- Logik
-  - Komplettwiederstand berechnen
-  - Spannungsabfall pro Wiederstand
+## Ideas
 
-### Beispiel Schaltung
+- Responsibilities
+  - UI
+    - Schaltung definieren
+      - Spannungsquelle
+      - Wiederstände
+      - Verbraucher
+  - Logik
+    - Komplettwiederstand berechnen
+    - Spannungsabfall pro Wiederstand
 
-![Beispiel](./docs/beispiel.dio.svg)
+## Installation
 
-![Schaltung View](./docs/schaltung.dio.svg)
+- Download the latest installer from the Release page.
+- Execute the installer.
+- Open the Weylandinator.
 
-### Beispiel Datenstruktur Circuit
+## How to use it
+
+1. Open the Weylandinator
+![Weylandinator](./img/weylandinator-screenshot.png)
+1. Add as many elements as you need
+1. Add the parameter that you have for each element
+1. Press "Solve" to calculate the remaining parameters.
+
+## Sample Circuits
+
+This is a sample circuit that could be represented using the Weylandinator.
+
+![Sample Circuits](./docs/beispiel.dio.svg)
+
+## Sample Data
+
+A circuit is stored in a tree like structure. So each Element can have multiple child elements.
+
+By Default there's a RootElement that stores all the other elements.
+
+This sample shows a circuit with two parallel resistors and a single voltage source.
 
 ```JSON
 "circuit": {
-    "elements": [
+    "name": "RootElement"
+    "childElement": [
         {
-            "start": "1",
-            "end": "2",
-            "type": "Spannungsquelle",
-            "name": "U0",
-            "properties": [
+            "type": CircuitElementType.VoltageSource,
+            "name": "U_0",
+            "voltage": 5,
+            "current": 0,
+            "resistance": 0,
+            "childElement": [
                 {
-                    "key": "amount",
-                    "value": "10",
-                    "unit": "V"
-                }
-            ]
-        },
-        {
-            "start": "2",
-            "end": "3",
-            "name": "R1",
-            "type": "Wiederstand",
-            "properties": [
+                    "type": CircuitElementType.Resistor,
+                    "name": "R_1",
+                    "voltage": 0,
+                    "current": 0,
+                    "resistance": 1000,
+                    "childElement": []
+                },
                 {
-                    "key": "amount",
-                    "value": "500",
-                    "unit": "Ohm"
-                }
-            ]
-        },
-        {
-            "start": "3",
-            "end": "4",
-            "name": "R2",
-            "type": "Wiederstand",
-            "properties": [
-                {
-                    "key": "amount",
-                    "value": "1000",
-                    "unit": "Ohm"
-                }
-            ]
-        },
-        {
-            "start": "4",
-            "end": "5",
-            "name": "R3",
-            "type": "Wiederstand",
-            "properties": [
-                {
-                    "key": "amount",
-                    "value": "1000",
-                    "unit": "Ohm"
-                }
-            ]
-        },
-        {
-            "start": "3",
-            "end": "5",
-            "name": "R4",
-            "type": "Wiederstand",
-            "properties": [
-                {
-                    "key": "amount",
-                    "value": "2000",
-                    "unit": "Ohm"
+                    "type": CircuitElementType.Resistor,
+                    "name": "R_2",
+                    "voltage": 0,
+                    "current": 0,
+                    "resistance": 500,
+                    "childElement": []
                 }
             ]
         }
     ]
 }
-```
