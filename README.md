@@ -53,14 +53,14 @@ This sample shows a circuit with two parallel resistors and a single voltage sou
     "name": "RootElement"
     "childElement": [
         {
-            "type": CircuitElementType.VoltageSource,
+            "type": "CircuitElementType.VoltageSource",
             "name": "U_0",
             "voltage": 5,
             "current": 0,
             "resistance": 0,
             "childElement": [
                 {
-                    "type": CircuitElementType.Resistor,
+                    "type": "CircuitElementType.Resistor",
                     "name": "R_1",
                     "voltage": 0,
                     "current": 0,
@@ -68,7 +68,7 @@ This sample shows a circuit with two parallel resistors and a single voltage sou
                     "childElement": []
                 },
                 {
-                    "type": CircuitElementType.Resistor,
+                    "type": "CircuitElementType.Resistor",
                     "name": "R_2",
                     "voltage": 0,
                     "current": 0,
