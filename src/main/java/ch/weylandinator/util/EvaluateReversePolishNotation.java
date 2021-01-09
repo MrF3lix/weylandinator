@@ -19,23 +19,23 @@ public class EvaluateReversePolishNotation {
      * @return the actually result
      * @throws Exception
      */
-    private static int calcExpression(String[] inputStrArr) throws Exception {
-        Stack<Integer> stack = new Stack<>();
+    private static double calcExpression(String[] inputStrArr) throws Exception {
+        Stack<Double> stack = new Stack<>();
 
-        int result = 0;
+        double result = 0;
 
         for (String s : inputStrArr) {
             //if operator symbol then pop two stack element and do calculate
             char currentChar = s.charAt(0);
             if (isOperatorSymbol(currentChar)) {
                 //Note: the first pop num is the right operate number
-                int rightOperateNum = stack.pop();
-                int leftOperateNum = stack.pop();
-                int tmp = result = doCalcWithTwoNum(leftOperateNum, rightOperateNum, currentChar);
+                double rightOperateNum = stack.pop();
+                double leftOperateNum = stack.pop();
+                double tmp = result = doCalcWithTwoNum(leftOperateNum, rightOperateNum, currentChar);
 
                 stack.push(tmp);
             } else {
-                stack.push(Integer.valueOf(s));
+                stack.push(Double.valueOf(s));
             }
         }
 
@@ -69,7 +69,7 @@ public class EvaluateReversePolishNotation {
      * @return the result after calculating
      * @throws Exception
      */
-    private static int doCalcWithTwoNum(int n1, int n2, char operator) throws Exception {
+    private static double doCalcWithTwoNum(double n1, double n2, char operator) throws Exception {
         switch (operator) {
             case '+':
                 return n1 + n2;
@@ -85,14 +85,14 @@ public class EvaluateReversePolishNotation {
     }
 
 
-    public int solvePolishReverseNotation(String inputStr){
+    public double solvePolishReverseNotation(String inputStr){
         
         String[] inputStrArr = inputStr.split(" ");
         
-        int result = 0;
+        double result = 0;
         try {
             result = calcExpression(inputStrArr);
-            System.out.print(String.format("the result is : %d", result));
+            System.out.print("the result is : " + result);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,17 +111,17 @@ public class EvaluateReversePolishNotation {
         //test with string: 2,1,+,3,*
         //result is: 9
         String inputStr = args[0];
-        System.out.println(String.format("the input string is : %s", inputStr));
+        System.out.printf("the input string is : %s%n", inputStr);
 
         String[] inputStrArr = inputStr.split(",");
 
         if (inputStrArr.length < 3)
             throw new IllegalArgumentException("there should be more than 3 args");
 
-        int result = 0;
+        double result = 0;
         try {
             result = calcExpression(inputStrArr);
-            System.out.print(String.format("the result is : %d", result));
+            System.out.printf("the result is : %f", result);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -2,6 +2,7 @@ package ch.weylandinator.util;
 
 import ch.weylandinator.model.CircuitElement;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,31 +23,8 @@ public class Calculator
     public static final String SIGMA_L = "\u03A3";
     public static final String OMEGA_L = "\u03A9";
     public static final String RHO_S = "\u03C1";
-
+    private static final Map<String, String> OPERATOR_INVERTER = Map.of("+", "-", "-", "+", "*", "/", "/", "*");
     private static final String OPERATOREN = "+-/*" + SIGMA_L;
-
-    /**
-     * 0 = Keine Angabe = Gesucht
-     *
-     * @param voltage_U     Spannung
-     * @param resistance_R  Widerstand
-     * @param electricity_I Strom
-     * @return Gesucht
-     */
-    public static int URI(int voltage_U, int resistance_R, int electricity_I)
-    {
-        if (voltage_U == 0) {
-            voltage_U = resistance_R * electricity_I;
-            return voltage_U;
-        } else if (resistance_R == 0) {
-            resistance_R = voltage_U / electricity_I;
-            return resistance_R;
-        } else if (electricity_I == 0) {
-            electricity_I = voltage_U / resistance_R;
-            return electricity_I;
-        }
-        return 0;
-    }
 
     public List<CircuitElement> solveCircuit(List<CircuitElement> elementList)
     {
@@ -106,17 +84,7 @@ public class Calculator
         return expression.evaluate().getValue();
     }
 
-    private boolean hasExactlyOneUnknown(Formula formula, Map<String, Double> variableMap)
-    {
-        return formula.numberOfVariables() == variableMap.size() + 1;
-    }
-
-    private boolean hasDefaultValue(double value)
-    {
-        return value == 0d;
-    }
-
-    public FormulaTuple dissolveByVariable(String form, String variable)
+    public String dissolveByVariable(String form, String variable)
     {
         //3 = 2 + X     ---> - Summand
         //3 = 10 - X    ---> + X
@@ -138,104 +106,149 @@ public class Calculator
         // 3. [Value] [Operator] 
         // 4. Prüfen ob Hauptoperation Summe oder Produkt
 
+        ShuntingYardAlgorithm shuntingYardAlgorithm = new ShuntingYardAlgorithm();
+
         String[] equationLeftRight = StringOperation.removeDuplicateSpaces(form).split("=");
         String left = equationLeftRight[0];
         String right = equationLeftRight[1];
+        String[] formulaLeft =
+            StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(left)).split(" ");
+        String[] formulaRight =
+            StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(right)).split(" ");
 
-        ShuntingYardAlgorithm shuntingYardAlgorithm = new ShuntingYardAlgorithm();
-        String shuntingYardLeft = StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(left));
-        String shuntingYardRight = StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(right));
-        String[] formulaLeft = shuntingYardLeft.split(" ");
-        String[] formulaRight = shuntingYardRight.split(" ");
+        FormulaTuple formulaTuple = new FormulaTuple(left, right);
 
-        FormulaTuple formulaTuple = null;
-        
-        switch (getLast(formulaRight)) {
-            case "+":
-                formulaTuple = subtractAllExceptUnknown(formulaRight, formulaLeft);
-                break;
-            case "-":
-                break;
-            case "/":
-                break;
-            case "*":
-                divideAllExceptUnknown(formulaRight);
-                break;
+        while (!variableIsIsolated(formulaTuple.formulatLeft, variable) &&
+               !variableIsIsolated(formulaTuple.formulaRight, variable)) {
+            switch (getLast(formulaRight)) {
+                case "+" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "+");
+                case "-" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "-");
+                case "/" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "/");
+                case "*" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "*");
+            }
         }
 
-        return formulaTuple;
+        if (variableIsIsolated(formulaTuple.formulatLeft, variable)) {
+            return removePositivOperators(formulaTuple.formulatLeft) + " = " + formulaTuple.formulaRight;
+        } else {
+            return removePositivOperators(formulaTuple.formulaRight) + " = " + formulaTuple.formulatLeft;
+        }
     }
 
-    private void divideAllExceptUnknown(String[] formulaRight)
+    private String removePositivOperators(String string){
+        return string.replaceAll("[+*]", "").trim();
+    }
+    
+    private boolean variableIsIsolated(String partialFormula, String variable)
     {
+        if (partialFormula == null || partialFormula.isEmpty()) {
+            return false;
+        }
 
+        return removePositivOperators(partialFormula).equals(variable);
+    }
+
+    private boolean hasExactlyOneUnknown(Formula formula, Map<String, Double> variableMap)
+    {
+        return formula.numberOfVariables() == variableMap.size() + 1;
+    }
+
+    private boolean hasDefaultValue(double value)
+    {
+        return value == 0d;
     }
 
     //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
     //2 + 3 + 4 =  5 / (2 - X)    ---> [2] [5/(2-X)] [4] - Summanden  ---> 2 3 4 + + = 5 2 X - /
     //(2 - X) = 5 / (2 + 3 + 4)  ---> [2] [5/(2-X)] [4] - Summanden   ---> 2 X -     = 5 2 3 4 + + /
-    private FormulaTuple subtractAllExceptUnknown(String[] formulaRight, String[] formulaLeft)
+    private FormulaTuple performInvertedOperation(String[] formulaRight, String[] formulaLeft, String unknownVariable, String operator)
     {
         // Right to Left
-        List<String> summandList = getSummandList(formulaRight);
+        List<String> summandList = getOperationList(formulaRight, operator);
 
         //Subtract
         String formulaRightNew = "";
-        String formulaLeftNew = String.join(" ",formulaLeft) + " ";
+        String formulaLeftNew = String.join(" ", formulaLeft) + " ";
         for (String string : summandList) {
-            if (Pattern.compile(".*[a-zA-Z].*").matcher(string).matches()) {
+            if (containsVariable(string, unknownVariable)) {
                 formulaRightNew = string;
             } else {
-                string = string.replaceAll("\\+", "-");
-                formulaLeftNew += string + " ";
+                formulaLeftNew += invertOperator(string, operator) + " ";
             }
         }
+
         formulaLeftNew = StringOperation.removeDuplicateSpaces(formulaLeftNew);
         return new FormulaTuple(formulaLeftNew, formulaRightNew);
     }
 
-    private List<String> getSummandList(String[] formulaRight)
+    private String invertOperator(String string, String operator)
     {
-        List<String> summandList = new ArrayList<>();
+        return string.replaceAll(MessageFormat.format("\\{0}", operator), getInvertedOperator(operator));
+    }
+
+    private List<String> getOperationList(String[] formula, String operator)
+    {
+        List<String> operationList = new ArrayList<>();
         int operatorCount = 1;
-        int startIndex = formulaRight.length - 1;
         boolean wasOperator = true;
 
         //Summands -> ArrayList 1 = 3 + X / 2 ---> [3 +] [X 2 / +]
         // X 2 /
         // + <-> -
         // * <-> /
-        String currentSummand = "+";
-        for (int i = formulaRight.length - 2; i >= 0; i--) {
+        String currentOperation = operator;
+        for (int i = formula.length - 2; i >= 0; i--) {
 
-            if (isOperator(formulaRight[i])) {
+            if (isOperator(formula[i])) {
                 if (!wasOperator) {
-                    summandList.add(currentSummand.trim());
-                    currentSummand = "";
+                    operationList.add(currentOperation.trim());
+                    currentOperation = "";
                 }
-                currentSummand = formulaRight[i] + " " + currentSummand;
+                currentOperation = formula[i] + " " + currentOperation;
                 operatorCount++;
                 wasOperator = true;
             } else {
 
                 if (operatorCount == 0) {
-                    summandList.add(currentSummand.trim());
-                    summandList.add(formulaRight[i] + " +");
+                    operationList.add(currentOperation.trim());
+                    String operatorToAppend = operator;
+                    if(operator.equals("-") || operator.equals("/"))
+                    {
+                        operatorToAppend = OPERATOR_INVERTER.get(operatorToAppend);
+                    }
+                    operationList.add(formula[i] + " " + operatorToAppend);
 
-                    currentSummand = "";
+                    currentOperation = "";
                 } else {
 
-                    currentSummand = formulaRight[i] + " " + currentSummand;
-                } operatorCount--;
+                    currentOperation = formula[i] + " " + currentOperation;
+                }
+                operatorCount--;
                 wasOperator = false;
             }
         }
-        return summandList;
+        return operationList;
+    }
+
+    private boolean containsVariable(String string, String unknownVariable)
+    {
+        String pattern;
+        if (unknownVariable == null || unknownVariable.isEmpty()) {
+            pattern = ".*[a-zA-Z].*";
+        } else {
+            pattern = ".*[" + unknownVariable + "].*";
+        }
+        return Pattern.compile(pattern).matcher(string).matches();
     }
 
     private boolean isOperator(String string)
     {
         return string.contains("[+-*/]");
+    }
+
+    private String getInvertedOperator(String operator)
+    {
+        return OPERATOR_INVERTER.get(operator);
     }
 
     private String getLast(String[] array)
