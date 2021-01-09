@@ -24,6 +24,16 @@ class CalculatorTest
     }
 
     @Test
+    @Disabled
+    void solveAddWithMinusPrefix(){
+        String initialFormula = "1 = - 11 + B + 3";
+        String dissolvedFormula = calculator.dissolveByVariable(initialFormula, "B");
+
+        System.out.println(initialFormula);
+        assertEquals(9.0, evaluateReversePolishNotation.solvePolishReverseNotation(prepareForSolve(dissolvedFormula)));
+    }
+
+    @Test
     void solveSubtract(){
         String initialFormula = "1 = B - 3";
         String dissolvedFormula = calculator.dissolveByVariable(initialFormula, "B");
