@@ -174,12 +174,12 @@ public class Calculator
     private FormulaTuple performInvertedOperation(String[] formulaRight, String[] formulaLeft, String unknownVariable, String operator)
     {
         // Right to Left
-        List<String> summandList = getOperationList(formulaRight, operator);
+        List<String> operationList = getOperationList(formulaRight, operator);
 
         //Subtract
         String formulaRightNew = "";
         String formulaLeftNew = String.join(" ", formulaLeft) + " ";
-        for (String string : summandList) {
+        for (String string : operationList) {
             if (containsVariable(string, unknownVariable)) {
                 formulaRightNew = string;
             } else {
@@ -236,7 +236,8 @@ public class Calculator
 
     private FormulaTuple invertMainOperators(String formulatLeft, String formulaRight)
     {
-        //TODO Negated / Divisor -> Invert all Main Operators
+        //TODO Negated -> Negate Non-Variable-Side / remove variable-Negation
+        //TODO Negated -> Divide By Non-Variable-Side / Multiply by Variable(-Side)
         return null;
     }
 
