@@ -90,16 +90,6 @@ public class Calculator
 
     public double solve(Formula form, Map<String, Double> variableValueMap, String variable)
     {
-        int variableLocation = getVariableLocation(form, variable);
-        int equalsLocation = getEqualsLocation(form);
-        
-        /*
-        String dissolvedFormula = form.toString();
-        
-        if(variableLocation > equalsLocation)
-        {
-            dissolvedFormula = dissolveByVariable(dissolvedFormula, variable);
-        }*/
 
         for (Map.Entry<String, Double> variableEntry : variableValueMap.entrySet()) {
             form.replaceVariable(variableEntry.getKey(), variableEntry.getValue());
@@ -150,7 +140,7 @@ public class Calculator
             if (variableIsIsolatedWitNegativOperators(formulaTuple.formulatLeft, variable) ||
                 variableIsIsolatedWitNegativOperators(formulaTuple.formulaRight, variable))
             {
-                formulaTuple = invertMainOperators(formulaTuple.formulatLeft, formulaTuple.formulaRight);
+                formulaTuple = invertMainOperators(formulaTuple.formulatLeft, formulaTuple.formulaRight, variable);
             }
             
             switch (getLast(formulaRight)) {
@@ -178,17 +168,17 @@ public class Calculator
 
         //Subtract
         String formulaRightNew = "";
-        String formulaLeftNew = String.join(" ", formulaLeft) + " ";
+        StringBuilder formulaLeftNew = new StringBuilder(String.join(" ", formulaLeft) + " ");
         for (String string : operationList) {
             if (containsVariable(string, unknownVariable)) {
                 formulaRightNew = string;
             } else {
-                formulaLeftNew += invertOperator(string, operator) + " ";
+                formulaLeftNew.append(invertOperator(string, operator)).append(" ");
             }
         }
 
-        formulaLeftNew = StringOperation.removeDuplicateSpaces(formulaLeftNew);
-        return new FormulaTuple(formulaLeftNew, formulaRightNew);
+        formulaLeftNew = new StringBuilder(StringOperation.removeDuplicateSpaces(formulaLeftNew.toString()));
+        return new FormulaTuple(formulaLeftNew.toString(), formulaRightNew);
     }
 
     private List<String> getOperationList(String[] formula, String operator)
@@ -201,31 +191,31 @@ public class Calculator
         // X 2 /
         // + <-> -
         // * <-> /
-        String currentOperation = operator;
+        StringBuilder currentOperation = new StringBuilder(operator);
         for (int i = formula.length - 2; i >= 0; i--) {
 
             if (isOperator(formula[i])) {
                 if (!wasOperator) {
-                    operationList.add(currentOperation.trim());
-                    currentOperation = "";
+                    operationList.add(currentOperation.toString().trim());
+                    currentOperation = new StringBuilder();
                 }
-                currentOperation = formula[i] + " " + currentOperation;
+                currentOperation.insert(0, formula[i] + " ");
                 operatorCount++;
                 wasOperator = true;
             } else {
 
                 if (operatorCount == 0) {
-                    operationList.add(currentOperation.trim());
+                    operationList.add(currentOperation.toString().trim());
                     String operatorToAppend = operator;
                     if (operator.equals("-") || operator.equals("/")) {
                         operatorToAppend = OPERATOR_INVERTER.get(operatorToAppend);
                     }
                     operationList.add(formula[i] + " " + operatorToAppend);
 
-                    currentOperation = "";
+                    currentOperation = new StringBuilder();
                 } else {
 
-                    currentOperation = formula[i] + " " + currentOperation;
+                    currentOperation.insert(0, formula[i] + " ");
                 }
                 operatorCount--;
                 wasOperator = false;
@@ -234,10 +224,22 @@ public class Calculator
         return operationList;
     }
 
-    private FormulaTuple invertMainOperators(String formulatLeft, String formulaRight)
+    private FormulaTuple invertMainOperators(String formulatLeft, String formulaRight, String variable)
     {
-        //TODO Negated -> Negate Non-Variable-Side / remove variable-Negation
-        //TODO Negated -> Divide By Non-Variable-Side / Multiply by Variable(-Side)
+        String sideWithVariable = formulatLeft;
+        String nonVariableSide = formulaRight;
+        if(formulaRight.contains(variable))
+        {
+            sideWithVariable = formulaRight;
+            nonVariableSide = formulatLeft;
+        }
+        
+        if(sideWithVariable.substring(sideWithVariable.length() - 1).equals(SUBTRACT.getOperator())){
+            //TODO Negated -> Negate Non-Variable-Side / remove variable-Negation    
+        }
+        else{
+            //TODO Negated -> Divide By Non-Variable-Side / Multiply by Variable(-Side)
+        }
         return null;
     }
 
@@ -335,15 +337,5 @@ class FormulaTuple
     {
         this.formulatLeft = formulatLeft;
         this.formulaRight = formulaRight;
-    }
-
-    public String getFormulaRight()
-    {
-        return formulaRight;
-    }
-
-    public String getFormulatLeft()
-    {
-        return formulatLeft;
     }
 }
