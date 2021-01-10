@@ -9,6 +9,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static ch.weylandinator.util.StandardOperator.*;
+
+enum StandardOperator
+{
+    ADD("+", true), SUBTRACT("-", false), MULTIPLY("*", true), DIVIDE("/", false);
+
+    private final String operator;
+    private final boolean isPositivOperator;
+
+    StandardOperator(String operator, boolean isPositivOperator)
+    {
+        this.operator = operator;
+        this.isPositivOperator = isPositivOperator;
+    }
+
+    public String getOperator()
+    {
+        return operator;
+    }
+
+    public boolean isPositivOperator()
+    {
+        return isPositivOperator;
+    }
+}
+
 /**
  * Greek Symobls
  * <ul>
@@ -24,7 +50,6 @@ public class Calculator
     public static final String OMEGA_L = "\u03A9";
     public static final String RHO_S = "\u03C1";
     private static final Map<String, String> OPERATOR_INVERTER = Map.of("+", "-", "-", "+", "*", "/", "/", "*");
-    private static final String OPERATOREN = "+-/*" + SIGMA_L;
 
     public List<CircuitElement> solveCircuit(List<CircuitElement> elementList)
     {
@@ -118,8 +143,16 @@ public class Calculator
 
         FormulaTuple formulaTuple = new FormulaTuple(left, right);
 
-        while (!variableIsIsolated(formulaTuple.formulatLeft, variable) &&
-               !variableIsIsolated(formulaTuple.formulaRight, variable)) {
+        while (!variableIsIsolatedWithPositivOperation(formulaTuple.formulatLeft, variable) &&
+               !variableIsIsolatedWithPositivOperation(formulaTuple.formulaRight, variable)) {
+
+            //TODO Check if Variable is negated or divisor
+            if (variableIsIsolatedWitNegativOperators(formulaTuple.formulatLeft, variable) ||
+                variableIsIsolatedWitNegativOperators(formulaTuple.formulaRight, variable))
+            {
+                formulaTuple = invertMainOperators(formulaTuple.formulatLeft, formulaTuple.formulaRight);
+            }
+            
             switch (getLast(formulaRight)) {
                 case "+" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "+");
                 case "-" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "-");
@@ -128,34 +161,11 @@ public class Calculator
             }
         }
 
-        if (variableIsIsolated(formulaTuple.formulatLeft, variable)) {
+        if (variableIsIsolatedWithPositivOperation(formulaTuple.formulatLeft, variable)) {
             return removePositivOperators(formulaTuple.formulatLeft) + " = " + formulaTuple.formulaRight;
         } else {
             return removePositivOperators(formulaTuple.formulaRight) + " = " + formulaTuple.formulatLeft;
         }
-    }
-
-    private String removePositivOperators(String string){
-        return string.replaceAll("[+*]", "").trim();
-    }
-    
-    private boolean variableIsIsolated(String partialFormula, String variable)
-    {
-        if (partialFormula == null || partialFormula.isEmpty()) {
-            return false;
-        }
-
-        return removePositivOperators(partialFormula).equals(variable);
-    }
-
-    private boolean hasExactlyOneUnknown(Formula formula, Map<String, Double> variableMap)
-    {
-        return formula.numberOfVariables() == variableMap.size() + 1;
-    }
-
-    private boolean hasDefaultValue(double value)
-    {
-        return value == 0d;
     }
 
     //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
@@ -179,11 +189,6 @@ public class Calculator
 
         formulaLeftNew = StringOperation.removeDuplicateSpaces(formulaLeftNew);
         return new FormulaTuple(formulaLeftNew, formulaRightNew);
-    }
-
-    private String invertOperator(String string, String operator)
-    {
-        return string.replaceAll(MessageFormat.format("\\{0}", operator), getInvertedOperator(operator));
     }
 
     private List<String> getOperationList(String[] formula, String operator)
@@ -212,8 +217,7 @@ public class Calculator
                 if (operatorCount == 0) {
                     operationList.add(currentOperation.trim());
                     String operatorToAppend = operator;
-                    if(operator.equals("-") || operator.equals("/"))
-                    {
+                    if (operator.equals("-") || operator.equals("/")) {
                         operatorToAppend = OPERATOR_INVERTER.get(operatorToAppend);
                     }
                     operationList.add(formula[i] + " " + operatorToAppend);
@@ -230,6 +234,55 @@ public class Calculator
         return operationList;
     }
 
+    private FormulaTuple invertMainOperators(String formulatLeft, String formulaRight)
+    {
+        //TODO Negated / Divisor -> Invert all Main Operators
+        return null;
+    }
+
+    private boolean hasDefaultValue(double value)
+    {
+        return value == 0d;
+    }
+
+    private String removePositivOperators(String string)
+    {
+        return string.replaceAll("[" + ADD.getOperator() + MULTIPLY.getOperator() + "]", "").trim();
+    }
+
+    private String removeNegativOperators(String string)
+    {
+        return string.replaceAll("[" + SUBTRACT.getOperator() + DIVIDE.getOperator() + "]", "").trim();
+    }
+
+    private boolean variableIsIsolatedWithPositivOperation(String partialFormula, String variable)
+    {
+        if (partialFormula == null || partialFormula.isEmpty()) {
+            return false;
+        }
+
+        return removePositivOperators(partialFormula).equals(variable);
+    }
+
+    private boolean variableIsIsolatedWitNegativOperators(String partialFormula, String variable)
+    {
+        if (partialFormula == null || partialFormula.isEmpty()) {
+            return false;
+        }
+
+        return removeNegativOperators(partialFormula).equals(variable);
+    }
+
+    private boolean hasExactlyOneUnknown(Formula formula, Map<String, Double> variableMap)
+    {
+        return formula.numberOfVariables() == variableMap.size() + 1;
+    }
+
+    private String invertOperator(String string, String operator)
+    {
+        return string.replaceAll(MessageFormat.format("\\{0}", operator), getInvertedOperator(operator));
+    }
+
     private boolean containsVariable(String string, String unknownVariable)
     {
         String pattern;
@@ -243,7 +296,12 @@ public class Calculator
 
     private boolean isOperator(String string)
     {
-        return string.contains("[+-*/]");
+        for (StandardOperator s : StandardOperator.values()) {
+            if (s.getOperator().equals(string)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getInvertedOperator(String operator)
