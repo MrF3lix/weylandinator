@@ -8,10 +8,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static ch.weylandinator.util.BasicOperator.*;
-import static ch.weylandinator.util.StandardOperator.ADD;
-import static ch.weylandinator.util.StandardOperator.DIVIDE;
-import static ch.weylandinator.util.StandardOperator.MULTIPLY;
-import static ch.weylandinator.util.StandardOperator.SUBTRACT;
+
 
 enum BasicOperator
 {
@@ -37,12 +34,19 @@ public class FormulaSolver
     private static final String DELIMITER = " ";
     private static final Map<String, String> OPERATOR_INVERTER =
         Map.of(ADD.getOperator(), SUBTRACT.getOperator(), SUBTRACT.getOperator(), ADD.getOperator(), MULTIPLY.getOperator(), DIVIDE.getOperator(), DIVIDE.getOperator(), MULTIPLY.getOperator());
+    
+    private final EvaluateReversePolishNotation evaluateReversePolishNotation = new EvaluateReversePolishNotation();
 
     public FormulaSolver()
     {
 
     }
 
+    public double solveFormula(String formula, String variable){
+        formula = dissolveFormula(formula, variable).split(ASSIGN.getOperator())[1].trim();
+        return evaluateReversePolishNotation.solvePolishReverseNotation(formula);
+    }
+    
     public String dissolveFormula(String formula, String variable)
     {
         boolean isFinished = false;
@@ -55,7 +59,7 @@ public class FormulaSolver
         
         while(!isFinished)
         {
-            if (isVariableIsolated(Arrays.toString(sideWithVariable), variable)) {
+            if (isVariableIsolated(arrayToString(sideWithVariable), variable)) {
                 if(operationIsPositiv(sideWithVariable))
                 {
                     isFinished = true;
@@ -67,7 +71,7 @@ public class FormulaSolver
                 List<String[]> operationList = getOperationList(sideWithVariable);
 
                 for (String[] operation : operationList){
-                    if(!containsVariable(Arrays.toString(operation),variable)){
+                    if(!containsVariable(arrayToString(operation),variable)){
                         String[] invertedOperation = invertOperator(operation);
                         sideWithOutVariable = concatenateArrays(sideWithOutVariable, invertedOperation);
                     }
@@ -76,11 +80,9 @@ public class FormulaSolver
                     }
                 }
             }
-
         }
 
-
-        return null;
+        return sideWithVariable[0] + " " + ASSIGN.getOperator() + " " + arrayToString(sideWithOutVariable);
     }
 
     public boolean operationIsPositiv(String[] sideWithVariable)
@@ -101,14 +103,14 @@ public class FormulaSolver
         return operation;
     }
 
-    private List<String[]> getOperationList(String[] sideWithVariable)
+   /* private List<String[]> getOperationList(String[] sideWithVariable)
     {
         List<String[]> operationList = new ArrayList<>();
 
         String mainOperation = getMainOperator(sideWithVariable);
 
         int currentBlockStart = 0;
-        int currentBlockEnd = sideWithVariable.length - 1;
+        int currentBlockEnd = sideWithVariable.length;
 
         while(currentBlockEnd > 0)
         {
@@ -128,6 +130,51 @@ public class FormulaSolver
             operationList.add(new String[] {sideWithVariable[0], operatorToBeAdded});
         }
         
+        return operationList;
+    }*/
+
+    private List<String[]> getOperationList(String[] formula)
+    {
+        String mainOperation = getMainOperator(formula);
+        
+        List<String[]> operationList = new ArrayList<>();
+        int operatorCount = 1;
+        boolean wasOperator = true;
+
+        //Summands -> ArrayList 1 = 3 + X / 2 ---> [3 +] [X 2 / +]
+        // X 2 /
+        // + <-> -
+        // * <-> /
+        StringBuilder currentOperation = new StringBuilder(mainOperation);
+        for (int i = formula.length - 2; i >= 0; i--) {
+
+            if (isOperator(formula[i])) {
+                if (!wasOperator) {
+                    operationList.add(currentOperation.toString().trim().split(DELIMITER));
+                    currentOperation = new StringBuilder();
+                }
+                currentOperation.insert(0, formula[i] + " ");
+                operatorCount++;
+                wasOperator = true;
+            } else {
+
+                if (operatorCount == 0) {
+                    operationList.add(currentOperation.toString().trim().split(DELIMITER));
+                    String operatorToAppend = mainOperation;
+                    if (mainOperation.equals("-") || mainOperation.equals("/")) {
+                        operatorToAppend = OPERATOR_INVERTER.get(operatorToAppend);
+                    }
+                    operationList.add(new String[] {formula[i], operatorToAppend});
+
+                    currentOperation = new StringBuilder();
+                } else {
+
+                    currentOperation.insert(0, formula[i] + " ");
+                }
+                operatorCount--;
+                wasOperator = false;
+            }
+        }
         return operationList;
     }
 
@@ -217,7 +264,7 @@ public class FormulaSolver
         String[] formulaRight =
             StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(splitFormula[1])).split(DELIMITER);
 
-        return Arrays.toString(formulaLeft) + ASSIGN + Arrays.toString(formulaRight);
+        return arrayToString(formulaLeft) + ASSIGN.getOperator() + arrayToString(formulaRight);
     }
 
     private <T> T[] concatenateArrays(T[] first, T[] second) {
@@ -230,5 +277,10 @@ public class FormulaSolver
         System.arraycopy(second, 0, newArray, aLen, bLen);
 
         return newArray;
+    }
+    
+    private String arrayToString(String[] array){
+        String string = Arrays.toString(array).replaceAll("[\\[\\],]", " ");
+        return StringOperation.removeDuplicateSpaces(string);
     }
 }

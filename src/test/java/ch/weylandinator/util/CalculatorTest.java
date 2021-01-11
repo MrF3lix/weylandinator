@@ -66,7 +66,7 @@ class CalculatorTest
         String dissolvedFormula = calculator.dissolveByVariable(initialFormula, "B");
 
         System.out.println(initialFormula);
-        assertEquals(12, evaluateReversePolishNotation.solvePolishReverseNotation(prepareForSolve(dissolvedFormula)));
+        assertEquals(12.0, evaluateReversePolishNotation.solvePolishReverseNotation(prepareForSolve(dissolvedFormula)));
     }
 
     @Test
@@ -76,7 +76,7 @@ class CalculatorTest
         String dissolvedFormula = calculator.dissolveByVariable(initialFormula, "B");
 
         System.out.println(initialFormula);
-        assertEquals(6, evaluateReversePolishNotation.solvePolishReverseNotation(prepareForSolve(dissolvedFormula)));
+        assertEquals(6.0, evaluateReversePolishNotation.solvePolishReverseNotation(prepareForSolve(dissolvedFormula)));
     }
     
     //"A - B / (C - D) + E * F"
