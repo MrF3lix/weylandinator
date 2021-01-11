@@ -34,9 +34,9 @@ public class StateManager {
 
         for(CircuitElement element : elements) {
             if(name.equals(element.getName())) {
-                elementFound = element;
+                return element;
             } else {
-                elementFound = findElementByName(element.getChildElements(), name);
+                return findElementByName(element.getChildElements(), name);
             }
         }
 
@@ -45,19 +45,6 @@ public class StateManager {
 
     public List<CircuitElement> getAllElements() {
         return CircuitElementHelper.getFlatList(rootElement.getChildElements());
-        // return getAllElements(rootElement.getChildElements());
-    }
-
-    private List<CircuitElement> getAllElements(List<CircuitElement> elements) {
-        List<CircuitElement> collected = new ArrayList<CircuitElement>(elements);
-
-        for(CircuitElement element : elements) {
-            if(element.getChildElements().size() > 0) {
-                collected.addAll(getAllElements(element.getChildElements()));
-            }
-        }
-
-        return collected;
     }
 
     public void deleteElementByName(String elementName) {
