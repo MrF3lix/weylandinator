@@ -27,6 +27,8 @@ class ShuntingYardAlgorithmTest
     Map<String, String> inputVSExpected2 = Map.of(
         "(B + C) / D",                "B C + D /"
         ,"- A + B * C",                "A - B C * +"
+        ,"+ A + B * C",                "A + B C * +"
+        ,"A - B / (C + D) + E * F",     "A B C D + / - E F * +"
     );
 
     @BeforeEach

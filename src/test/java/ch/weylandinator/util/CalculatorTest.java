@@ -70,7 +70,7 @@ class CalculatorTest
     }
 
     @Test
-   @Disabled
+    @Disabled
     void solveDivideByVariable(){
         String initialFormula = "4 = 24 / B";
         String dissolvedFormula = calculator.dissolveByVariable(initialFormula, "B");
@@ -79,6 +79,7 @@ class CalculatorTest
         assertEquals(6, evaluateReversePolishNotation.solvePolishReverseNotation(prepareForSolve(dissolvedFormula)));
     }
     
+    //"A - B / (C - D) + E * F"
     
     private String prepareForSolve(String dissolvedFormula){
         System.out.println(dissolvedFormula);
