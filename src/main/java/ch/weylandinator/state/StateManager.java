@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.weylandinator.model.CircuitElement;
+import ch.weylandinator.util.CircuitElementHelper;
 
 public class StateManager {
 
@@ -43,7 +44,8 @@ public class StateManager {
     }
 
     public List<CircuitElement> getAllElements() {
-        return getAllElements(rootElement.getChildElements());
+        return CircuitElementHelper.getFlatList(rootElement.getChildElements());
+        // return getAllElements(rootElement.getChildElements());
     }
 
     private List<CircuitElement> getAllElements(List<CircuitElement> elements) {
@@ -87,5 +89,9 @@ public class StateManager {
         for(CircuitObserver observer : observers) {
             observer.updated();
         }
+    }
+
+    public CircuitElement getRootElement() {
+        return rootElement;
     }
 }

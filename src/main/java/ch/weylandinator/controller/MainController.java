@@ -6,6 +6,7 @@ import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
 import ch.weylandinator.util.Calculator;
 import ch.weylandinator.util.Formula;
+import ch.weylandinator.util.ResistanceCalculator;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -28,8 +29,7 @@ import java.util.stream.Collectors;
 import static ch.weylandinator.model.CircuitElementType.RESISTOR;
 import static ch.weylandinator.model.CircuitElementType.VOLTAGE_SOURCE;
 
-public class MainController implements Initializable, CircuitObserver
-{
+public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
     private GraphicsContext gc;
 
@@ -49,6 +49,8 @@ public class MainController implements Initializable, CircuitObserver
 
     private double resultCurrent;
 
+    private double totalResistance;
+
     public MainController() {
         stateManager.addObserver(this);
     }
@@ -59,6 +61,9 @@ public class MainController implements Initializable, CircuitObserver
      */
     @Override
     public void updated() {
+        // Recalculate total resistance
+
+        totalResistance = new ResistanceCalculator(stateManager.getRootElement()).getTotalResistance();
         updateElements();
         displayCircuit();
     }
@@ -90,20 +95,20 @@ public class MainController implements Initializable, CircuitObserver
 
             switch (newElement.getType()) {
                 case RESISTOR:
-                    newElement.setResistance(Integer.parseInt(elementValue.getText()));
+                    newElement.setResistance(Double.parseDouble(elementValue.getText()));
                     break;
                 case VOLTAGE_SOURCE:
-                    newElement.setVoltage(Integer.parseInt(elementValue.getText()));
+                    newElement.setVoltage(Double.parseDouble(elementValue.getText()));
                     break;
                 case LOAD:
-                    newElement.setCurrent(Integer.parseInt(elementValue.getText()));
+                    newElement.setCurrent(Double.parseDouble(elementValue.getText()));
                     break;
                 default:
                     break;
             }
 
             String parentElementName = availableElements.getSelectionModel().getSelectedItem();
-            if(parentElementName != null) {
+            if (parentElementName != null) {
                 stateManager.addElementToCircuit(parentElementName, newElement);
             } else {
                 stateManager.addElementToCircuit(newElement);
@@ -124,9 +129,9 @@ public class MainController implements Initializable, CircuitObserver
 
     public void update_onAction() {
         try {
-            selectedElement.setResistance(Integer.parseInt(resistance.getText()));
-            selectedElement.setVoltage(Integer.parseInt(voltage.getText()));
-            selectedElement.setCurrent(Integer.parseInt(current.getText()));
+            selectedElement.setResistance(Double.parseDouble(resistance.getText()));
+            selectedElement.setVoltage(Double.parseDouble(voltage.getText()));
+            selectedElement.setCurrent(Double.parseDouble(current.getText()));
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -152,11 +157,10 @@ public class MainController implements Initializable, CircuitObserver
 
     public void solve_onAction() {
         Calculator calculator = new Calculator();
-        
-        // ---> 
-        
+
+        // --->
+
         calculator.solveCircuit(stateManager.getAllElements());
-        
 
         Formula formula = Formula.URI;
         Map<String, Double> variableMap = new HashMap<>();
@@ -174,10 +178,10 @@ public class MainController implements Initializable, CircuitObserver
     }
 
     private void updateElements() {
-        elementNames.getItems().setAll(
-                stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
-        availableElements.getItems().setAll(
-            stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+        elementNames.getItems()
+                .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+        availableElements.getItems()
+                .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
     }
 
     private void displayCircuit() {
@@ -195,7 +199,7 @@ public class MainController implements Initializable, CircuitObserver
 
     private void showCircuitInformation() {
         gc.fillText("U - Spannung: ??? V", 10, 10);
-        gc.fillText("R - Wiederstand: ??? Ohm", 10, 30);
+        gc.fillText("R - Wiederstand: " + totalResistance + " Ohm", 10, 30);
         gc.fillText("I - Strom: " + resultCurrent + " A", 10, 50);
     }
 
@@ -233,11 +237,13 @@ public class MainController implements Initializable, CircuitObserver
         CircuitElement r1 = new CircuitElement();
         r1.setName("r1");
         r1.setType(RESISTOR);
+        r1.setResistance(1000d);
         stateManager.addElementToCircuit("Voltage Source", r1);
 
         CircuitElement r2 = new CircuitElement();
         r2.setName("r2");
         r2.setType(RESISTOR);
+        r2.setResistance(500d);
         stateManager.addElementToCircuit("r1", r2);
     }
 }

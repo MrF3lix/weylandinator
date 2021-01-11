@@ -9,13 +9,13 @@ public class CircuitElement {
     private String name;
 
     // Volt
-    private int voltage;
+    private double voltage;
 
     // Amper
-    private int current;
+    private double current;
 
     // Ohm
-    private int resistance;
+    private double resistance;
 
     private List<CircuitElement> childElements = new ArrayList<>();
 
@@ -41,27 +41,27 @@ public class CircuitElement {
         this.name = name;
     }
 
-    public int getVoltage() {
+    public double getVoltage() {
         return voltage;
     }
 
-    public void setVoltage(int voltage) {
+    public void setVoltage(double voltage) {
         this.voltage = voltage;
     } 
 
-    public int getCurrent() {
+    public double getCurrent() {
         return current;
     }
 
-    public void setCurrent(int current) {
+    public void setCurrent(double current) {
         this.current = current;
     } 
 
-    public int getResistance() {
+    public double getResistance() {
         return resistance;
     }
 
-    public void setResistance(int resistance) {
+    public void setResistance(double resistance) {
         this.resistance = resistance;
     } 
 
