@@ -132,6 +132,9 @@ public class MainController implements Initializable, CircuitObserver {
             selectedElement.setResistance(Double.parseDouble(resistance.getText()));
             selectedElement.setVoltage(Double.parseDouble(voltage.getText()));
             selectedElement.setCurrent(Double.parseDouble(current.getText()));
+
+            // TODO use observer
+            updated();
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -199,7 +202,7 @@ public class MainController implements Initializable, CircuitObserver {
 
     private void showCircuitInformation() {
         gc.fillText("U - Spannung: ??? V", 10, 10);
-        gc.fillText("R - Wiederstand: " + totalResistance + " Ohm", 10, 30);
+        gc.fillText("R - Wiederstand: " + String.format("%.2f", totalResistance) + " Ohm", 10, 30);
         gc.fillText("I - Strom: " + resultCurrent + " A", 10, 50);
     }
 
@@ -244,6 +247,6 @@ public class MainController implements Initializable, CircuitObserver {
         r2.setName("r2");
         r2.setType(RESISTOR);
         r2.setResistance(500d);
-        stateManager.addElementToCircuit("r1", r2);
+        stateManager.addElementToCircuit("Voltage Source", r2);
     }
 }

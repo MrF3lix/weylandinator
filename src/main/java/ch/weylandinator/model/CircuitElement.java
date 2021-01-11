@@ -3,6 +3,7 @@ package ch.weylandinator.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class CircuitElement {
     private CircuitElementType type;
@@ -23,6 +24,19 @@ public class CircuitElement {
 
     public CircuitElement(String name) {
         this.name = name;
+    }
+
+    public CircuitElement(CircuitElement element) {
+        this.name = element.name;
+        this.type = element.type;
+        this.voltage = element.voltage;
+        this.current = element.current;
+        this.resistance = element.resistance;
+
+        this.childElements = new ArrayList<>();
+        for(CircuitElement child : element.getChildElements()) {
+            this.childElements.add(new CircuitElement(child));
+        }
     }
 
     public CircuitElementType getType() {
@@ -83,6 +97,22 @@ public class CircuitElement {
             }
         }
     }
+
+    public void replaceChildElement(CircuitElement toReplace, CircuitElement replacement) {
+        for (CircuitElement childElement : childElements) {
+            childElement.replaceChildElement(toReplace, replacement);
+        }
+
+        ListIterator<CircuitElement> it = childElements.listIterator();
+        while(it.hasNext()) {
+            CircuitElement next = it.next();
+
+            if(toReplace.getName().equals(next.getName())) {
+                it.set(new CircuitElement(replacement));
+            }
+        }
+    }
+
 
     public List<CircuitElement> getChildElements() {
         return childElements;
