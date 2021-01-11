@@ -235,10 +235,11 @@ public class Calculator
         }
         
         if(sideWithVariable.substring(sideWithVariable.length() - 1).equals(SUBTRACT.getOperator())){
+            
             //TODO Negated -> Negate Non-Variable-Side / remove variable-Negation    
         }
         else{
-            //TODO Negated -> Divide By Non-Variable-Side / Multiply by Variable(-Side)
+            //TODO Divisor -> Divide By Non-Variable-Side / Multiply by Variable(-Side)
         }
         return null;
     }
