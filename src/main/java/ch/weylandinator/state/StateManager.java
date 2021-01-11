@@ -26,21 +26,26 @@ public class StateManager {
     }
 
     public CircuitElement findElementByName(String name) {
-        return findElementByName(rootElement.getChildElements(), name);
+        return findElementByName(rootElement, name);
     }
 
-    private CircuitElement findElementByName(List<CircuitElement> elements, String name) {
-        CircuitElement elementFound = null;
+    private CircuitElement findElementByName(CircuitElement element, String name) {
 
-        for(CircuitElement element : elements) {
-            if(name.equals(element.getName())) {
-                return element;
-            } else {
-                return findElementByName(element.getChildElements(), name);
+        if(name.equals(element.getName())) {
+            return element;
+        }
+
+        for(CircuitElement child : element.getChildElements()) {
+            if(name.equals(child.getName())) {
+                return child;
             }
         }
 
-        return elementFound;
+        for(CircuitElement child : element.getChildElements()) {
+            return findElementByName(child, name);
+        }
+        
+        return null;
     }
 
     public List<CircuitElement> getAllElements() {

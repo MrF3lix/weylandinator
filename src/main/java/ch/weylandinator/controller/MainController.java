@@ -247,6 +247,6 @@ public class MainController implements Initializable, CircuitObserver {
         r2.setName("r2");
         r2.setType(RESISTOR);
         r2.setResistance(500d);
-        stateManager.addElementToCircuit("Voltage Source", r2);
+        stateManager.addElementToCircuit("r1", r2);
     }
 }
