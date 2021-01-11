@@ -25,20 +25,17 @@ public class ResistanceCalculator {
         double resistance = 0;
 
         do {
-            resistance += calculateSerialResistance(root);
-            resistance += calculateParallelResistance(root);
+            resistance = calculateSerialResistance(root);
+            resistance = calculateParallelResistance(root);
 
             List<CircuitElement> totalElements = CircuitElementHelper.getFlatList(root.getChildElements());
             numberOfResistors = getNumberOfResistors(totalElements);
         } while (numberOfResistors > 1);
 
-        return resistance;
+        return getSumOfResistors(CircuitElementHelper.getFlatList(root.getChildElements()));
     }
 
     private double calculateSerialResistance(CircuitElement root) {
-        // check for serial resistors (2 or more resistors that only have 1 child
-        // element)
-
         double resistance = 0;
         List<CircuitElement> serialPositionElements = getElementInSerial(root);
         if (serialPositionElements.size() > 1) {
@@ -73,7 +70,7 @@ public class ResistanceCalculator {
 
             CircuitElement replacement = new CircuitElement(parallelElements.get(parallelElements.size() - 1));
             replacement.setName("RP#1");
-            replacement.setResistance(getSumOfResistors(parallelElements));
+            replacement.setResistance(resistance);
 
             root.replaceChildElement(parallelElements.get(0), replacement);
 
@@ -93,20 +90,29 @@ public class ResistanceCalculator {
      */
     private List<CircuitElement> getElementInSerial(CircuitElement element) {
         List<CircuitElement> directChildren = element.getChildElements();
-        List<CircuitElement> grandChildren = element.getChildElements().stream()
-                .filter(o -> o.getType() == CircuitElementType.RESISTOR)
-                .flatMap(o -> o.getChildElements().stream().map(oo -> oo)).collect(Collectors.toList());
+        List<CircuitElement> grandChildren = getGrandChildElements(element);
+        List<CircuitElement> elements = new ArrayList<>();
 
         if (directChildren.size() == 1 && CircuitElementType.RESISTOR.equals(directChildren.get(0).getType())
-                && grandChildren.size() == 1) {
-            return Arrays.asList(directChildren.get(0), grandChildren.get(0));
-        } else {
-            for (CircuitElement directChild : directChildren) {
-                return getElementInSerial(directChild);
-            }
+                && (grandChildren.size() == 1 || grandChildren.size() == 0)) {
+            return Arrays.asList(element, directChildren.get(0));
         }
 
-        return new ArrayList<>();
+        for (CircuitElement directChild : directChildren) {
+            elements.addAll(getElementInSerial(directChild));
+        }
+
+        return elements;
+    }
+
+    private List<CircuitElement> getGrandChildElements(CircuitElement element) {
+        List<CircuitElement> grandChildren = new ArrayList<>();
+
+        for(CircuitElement child : element.getChildElements()) {
+            grandChildren.addAll(child.getChildElements());
+        }
+
+        return grandChildren;
     }
 
     /**

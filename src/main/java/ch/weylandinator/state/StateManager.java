@@ -30,22 +30,20 @@ public class StateManager {
     }
 
     private CircuitElement findElementByName(CircuitElement element, String name) {
+        CircuitElement searchElement = null;
 
         if(name.equals(element.getName())) {
-            return element;
+            searchElement = element;
         }
 
         for(CircuitElement child : element.getChildElements()) {
-            if(name.equals(child.getName())) {
-                return child;
+            CircuitElement foundElement = findElementByName(child, name);
+            if(foundElement != null) {
+                searchElement = foundElement;
             }
         }
 
-        for(CircuitElement child : element.getChildElements()) {
-            return findElementByName(child, name);
-        }
-        
-        return null;
+        return searchElement;
     }
 
     public List<CircuitElement> getAllElements() {
