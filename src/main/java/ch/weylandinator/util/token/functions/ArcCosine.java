@@ -10,16 +10,16 @@ import ch.weylandinator.util.token.Operator;
  * @author Subhomoy Haldar
  * @version 2017.04.20
  */
-public class Cosine extends Operator {
-    public static final Cosine INSTANCE = new Cosine();
+public class ArcCosine extends Operator {
+    public static final ArcCosine INSTANCE = new ArcCosine();
 
-    private Cosine() {
-        super("cos", 1, FUNCTIONAL, ArcCosine.INSTANCE);
+    private ArcCosine() {
+        super("arccos", 1, FUNCTIONAL, Cosine.INSTANCE);
     }
-
+    
     @Override
     public Operand evaluate(Operand... operands) throws ArityException {
         check(operands.length);
-        return operands[0].cosine();
+        return operands[0].arcCosine();
     }
 }

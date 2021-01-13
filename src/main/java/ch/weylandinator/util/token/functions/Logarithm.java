@@ -1,7 +1,6 @@
 package ch.weylandinator.util.token.functions;
 
 import ch.weylandinator.util.exceptions.ArityException;
-import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 
@@ -13,7 +12,7 @@ public class Logarithm extends Operator {
     public static final Logarithm INSTANCE = new Logarithm();
 
     private Logarithm() {
-        super("log", 1, FUNCTIONAL);
+        super("log", 1, FUNCTIONAL, null);
     }
 
     @Override

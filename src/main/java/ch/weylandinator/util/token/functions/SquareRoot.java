@@ -4,6 +4,7 @@ import ch.weylandinator.util.exceptions.ArityException;
 import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
+import ch.weylandinator.util.token.operations.RaisingToPower;
 /**
  * Wrapper for the square root function (sqrt).
  *
@@ -15,7 +16,7 @@ public class SquareRoot extends Operator
     public static final SquareRoot INSTANCE = new SquareRoot();
 
     private SquareRoot() {
-        super("sqrt", 1, FUNCTIONAL);
+        super("sqrt", 1, FUNCTIONAL, RaisingToPower.INSTANCE);
     }
 
     @Override

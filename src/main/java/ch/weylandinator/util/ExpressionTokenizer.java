@@ -73,8 +73,10 @@ class ExpressionTokenizer {
             UnrecognizedCharacterException {
         // Remove all whitespace
         String modifiedInput = input.replaceAll("\\s+", "");
+        
         // Replace -variable or -literal with -1*(...)
         modifiedInput = modifiedInput.replaceAll("-", "+-1*");
+        
         // If it was "(-x", it changed to "(+-1*x"
         // Remove redundant "+" following "("
         modifiedInput = modifiedInput.replaceAll("\\(\\+", "(");

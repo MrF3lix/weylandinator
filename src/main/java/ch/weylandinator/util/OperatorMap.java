@@ -43,7 +43,9 @@ class OperatorMap {
         map.put(Absolute.INSTANCE.getSymbol(), Absolute.INSTANCE);
         map.put(SquareRoot.INSTANCE.getSymbol(), SquareRoot.INSTANCE);
         map.put(Sine.INSTANCE.getSymbol(), Sine.INSTANCE);
+        map.put(ArcSine.INSTANCE.getSymbol(), ArcSine.INSTANCE);
         map.put(Cosine.INSTANCE.getSymbol(), Cosine.INSTANCE);
+        map.put(ArcCosine.INSTANCE.getSymbol(), ArcCosine.INSTANCE);
         map.put(Tangent.INSTANCE.getSymbol(), Tangent.INSTANCE);
         map.put(Exponential.INSTANCE.getSymbol(), Exponential.INSTANCE);
         map.put(Logarithm.INSTANCE.getSymbol(), Logarithm.INSTANCE);

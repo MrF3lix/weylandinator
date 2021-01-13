@@ -1,7 +1,6 @@
 package ch.weylandinator.util.token.functions;
 
 import ch.weylandinator.util.exceptions.ArityException;
-import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 
@@ -15,7 +14,7 @@ public class Tangent extends Operator {
     public static final Tangent INSTANCE = new Tangent();
 
     private Tangent() {
-        super("tan", 1, FUNCTIONAL);
+        super("tan", 1, FUNCTIONAL, ArcTangent.INSTANCE);
     }
 
     @Override

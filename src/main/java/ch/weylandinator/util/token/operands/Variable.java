@@ -113,6 +113,12 @@ public class Variable implements Operand
         return new Real(getValue()).sine();
     }
 
+    @Override
+    public Operand arcSine()
+    {
+        return new Real(getValue()).arcSine();
+    }
+
     /**
      * If this variable is initialized, then calculate the cosine
      * of its most recently assigned value.
@@ -125,6 +131,12 @@ public class Variable implements Operand
         return new Real(getValue()).cosine();
     }
 
+    @Override
+    public Operand arcCosine()
+    {
+        return new Real(getValue()).arcCosine();
+    }
+
     /**
      * If this variable is initialized, then calculate the tangent
      * of its most recently assigned value.
@@ -135,6 +147,12 @@ public class Variable implements Operand
     @Override
     public Operand tangent() throws EvaluationException {
         return new Real(getValue()).tangent();
+    }
+
+    @Override
+    public Operand arcTangent()
+    {
+        return new Real(getValue()).arcTangent();
     }
 
     /**
