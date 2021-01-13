@@ -1,4 +1,3 @@
-
 package ch.weylandinator.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -6,35 +5,50 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ch.weylandinator.util.BasicOperator.*;
 
-
 enum BasicOperator
 {
-    ADD("+"), SUBTRACT("-"), MULTIPLY("*"), DIVIDE("/"), ASSIGN("=");
+    ASSIGN("=", 0),
+    ADD("+", 1),
+    SUBTRACT("-", 1),
+    MULTIPLY("*", 2),
+    DIVIDE("/", 2),
+    ;
 
     private final String operator;
+    private final int    grade;
 
-    BasicOperator(String operator)
+    BasicOperator(String operator, int grade)
     {
         this.operator = operator;
+        this.grade = grade;
     }
 
     public String getOperator()
     {
         return operator;
     }
+
+    public int getGrade()
+    {
+        return grade;
+    }
+    
 }
 
 public class FormulaSolver
 {
-    private static final String POSITIV_OPERATORS = ADD.getOperator() + MULTIPLY.getOperator();
-    private static final String NEGATIV_OPERATORS = SUBTRACT.getOperator() + DIVIDE.getOperator();
-    private static final String DELIMITER = " ";
+    private static final String              POSITIV_OPERATORS = ADD.getOperator() + MULTIPLY.getOperator();
+    private static final String              NEGATIV_OPERATORS = SUBTRACT.getOperator() + DIVIDE.getOperator();
+    private static final String              DELIMITER         = " ";
     private static final Map<String, String> OPERATOR_INVERTER =
-        Map.of(ADD.getOperator(), SUBTRACT.getOperator(), SUBTRACT.getOperator(), ADD.getOperator(), MULTIPLY.getOperator(), DIVIDE.getOperator(), DIVIDE.getOperator(), MULTIPLY.getOperator());
-    
+        Map.of(ADD.getOperator(), SUBTRACT.getOperator(), SUBTRACT.getOperator(), ADD.getOperator(), MULTIPLY
+            .getOperator(), DIVIDE.getOperator(), DIVIDE.getOperator(), MULTIPLY.getOperator());
+
     private final EvaluateReversePolishNotation evaluateReversePolishNotation = new EvaluateReversePolishNotation();
 
     public FormulaSolver()
@@ -42,68 +56,80 @@ public class FormulaSolver
 
     }
 
-    public double solveFormula(String formula, String variable){
+    public double solveFormula(String formula, String variable)
+    {
         formula = dissolveFormula(formula, variable).split(ASSIGN.getOperator())[1].trim();
         return evaluateReversePolishNotation.solvePolishReverseNotation(formula);
     }
-    
+
     public String dissolveFormula(String formula, String variable)
     {
         boolean isFinished = false;
-        formula = getShuntingYardFormat(formula);
-        String[] splitFormula = splitFormula(formula);
-        int variableLocation = getVariableLocation(splitFormula, variable);
+        String shuntingYardFormat = getShuntingYardFormat(formula);
+        FormulaTuple formulaTuple = getFormulaTuple(shuntingYardFormat, variable);
         
-        String[] sideWithVariable = splitFormula[variableLocation].split(DELIMITER);
-        String[] sideWithOutVariable = splitFormula[1 - variableLocation].split(DELIMITER);
-        
-        while(!isFinished)
+        while (!isFinished) 
         {
-            if (isVariableIsolated(arrayToString(sideWithVariable), variable)) {
-                if(operationIsPositiv(sideWithVariable))
-                {
+            if (isVariableIsolated(arrayListToString(formulaTuple.getWithVar()), variable)) {
+                if (operationIsPositiv(formulaTuple.getWithVar())) {
                     isFinished = true;
-                }
-                else{
+                } else {
                     //applyInvertedOperation(sideWithVariable, sideWithOutVariable);
                 }
             } else {
-                List<String[]> operationList = getOperationList(sideWithVariable);
+                List<List<String>> operationList = getOperationList(formulaTuple.getWithVar());
 
-                for (String[] operation : operationList){
-                    if(!containsVariable(arrayToString(operation),variable)){
-                        String[] invertedOperation = invertOperator(operation);
-                        sideWithOutVariable = concatenateArrays(sideWithOutVariable, invertedOperation);
-                    }
-                    else{
-                        sideWithVariable = operation;
+                for (List<String> operation : operationList) {
+                    if (!containsVariable(arrayListToString(operation), variable)) {
+                        List<String> invertedOperation = invertOperator(operation);
+                        formulaTuple.appendToWithoutVar(invertedOperation);
+                    } else {
+                        formulaTuple.setWithVar(operation);
                     }
                 }
             }
         }
 
-        return sideWithVariable[0] + " " + ASSIGN.getOperator() + " " + arrayToString(sideWithOutVariable);
+        return formulaTuple.toString();
     }
 
-    public boolean operationIsPositiv(String[] sideWithVariable)
+    private FormulaTuple getFormulaTuple(String formula, String variable)
     {
-        return sideWithVariable[sideWithVariable.length - 1].equals(ADD.getOperator())
-               || sideWithVariable[sideWithVariable.length - 1].equals(MULTIPLY.getOperator() );
+        String[] splitFormula     = splitFormula(formula);
+        int      variableLocation = getVariableLocation(splitFormula, variable);
 
+        List<String> sideWithVariable    = Arrays.asList(splitFormula[variableLocation].split(DELIMITER));
+        List<String> sideWithOutVariable = Arrays.asList(splitFormula[1 - variableLocation].split(DELIMITER));
+
+        return new FormulaTuple(sideWithVariable, sideWithOutVariable);
     }
 
-    private boolean isFinished(String[] sideWithVariable, String variable)
+    public boolean operationIsPositiv(List<String> sideWithVariable)
     {
-        return (sideWithVariable.length == 1 && sideWithVariable[0].equals(variable));
+        String lastElement = getLastElement(sideWithVariable);
+        return lastElement.equals(ADD.getOperator()) || lastElement.equals(MULTIPLY.getOperator());
     }
 
-    private String[] invertOperator(String[] operation)
+    private String getLastElement(List<String> list){
+        return list.get(list.size() - 1);
+    }
+    
+    private List<String> invertOperator(List<String> operation)
     {
-        operation[operation.length - 1] = getInvertedOperator(operation[operation.length - 1]);
+        operation.set(operation.size() - 1, getInvertedOperator(getLastElement(operation)));
         return operation;
     }
-
-   /* private List<String[]> getOperationList(String[] sideWithVariable)
+    
+    public BasicOperator getOperatorByString(String operator){
+        for (BasicOperator basicOperator : BasicOperator.values()){
+            if(operator.equals(basicOperator.getOperator())){
+                return basicOperator;
+            }
+        }
+        return null;
+    }
+/*
+    private List<String[]> getOperationList(String[] sideWithVariable)
     {
         List<String[]> operationList = new ArrayList<>();
 
@@ -133,43 +159,62 @@ public class FormulaSolver
         return operationList;
     }*/
 
-    private List<String[]> getOperationList(String[] formula)
+    private List<List<String>> getOperationList(List<String> sideWithVariable)
     {
-        String mainOperation = getMainOperator(formula);
+        String mainOperator = getMainOperator(sideWithVariable);
+
+        List<List<String>> operationList = new ArrayList<>();
+        int            operatorCount = 1;
+        boolean        wasOperator   = true;
+
+        StringBuilder currentOperation = new StringBuilder(mainOperator);
+
+        int currentBlockStart = 0;
         
-        List<String[]> operationList = new ArrayList<>();
-        int operatorCount = 1;
-        boolean wasOperator = true;
-
-        //Summands -> ArrayList 1 = 3 + X / 2 ---> [3 +] [X 2 / +]
-        // X 2 /
-        // + <-> -
-        // * <-> /
-        StringBuilder currentOperation = new StringBuilder(mainOperation);
-        for (int i = formula.length - 2; i >= 0; i--) {
-
-            if (isOperator(formula[i])) {
+        int currentBlockEnd = sideWithVariable.size() - 1;
+        int startSearchAt = currentBlockEnd - 1;
+        
+        for (int i = startSearchAt; i >= 0; i--) 
+        {
+            String currentElement = sideWithVariable.get(i); 
+            
+            if (isVariableOrValue(currentElement))
+            {
+                int steps = currentBlockEnd - i;
+                currentBlockStart = i - steps + 1;
+                operationList.add(getOperationBlock(sideWithVariable, currentBlockStart, currentBlockEnd));
+            }
+            else if (isOperatorWithSameGrade(currentElement, mainOperator)){
+                
+            } 
+            else {
+                
+            }
+            
+            
+            if (isOperator(currentElement)) {
                 if (!wasOperator) {
-                    operationList.add(currentOperation.toString().trim().split(DELIMITER));
+                    operationList.add(splitOperation(currentOperation));
                     currentOperation = new StringBuilder();
                 }
-                currentOperation.insert(0, formula[i] + " ");
+                currentOperation.insert(0, currentElement + DELIMITER);
                 operatorCount++;
                 wasOperator = true;
             } else {
 
                 if (operatorCount == 0) {
-                    operationList.add(currentOperation.toString().trim().split(DELIMITER));
-                    String operatorToAppend = mainOperation;
-                    if (mainOperation.equals("-") || mainOperation.equals("/")) {
+                    operationList.add(splitOperation(currentOperation));
+                    String operatorToAppend = mainOperator;
+                    if (mainOperator.equals(SUBTRACT.getOperator()) || mainOperator.equals(DIVIDE.getOperator())) {
                         operatorToAppend = OPERATOR_INVERTER.get(operatorToAppend);
                     }
-                    operationList.add(new String[] {formula[i], operatorToAppend});
+                    
+                    operationList.add(Arrays.asList(currentElement, operatorToAppend));
 
                     currentOperation = new StringBuilder();
                 } else {
 
-                    currentOperation.insert(0, formula[i] + " ");
+                    currentOperation.insert(0, currentElement + DELIMITER);
                 }
                 operatorCount--;
                 wasOperator = false;
@@ -178,14 +223,35 @@ public class FormulaSolver
         return operationList;
     }
 
+    private List<String> splitOperation(StringBuilder operation){
+        return Arrays.asList(operation.toString().trim().split(DELIMITER));
+    }
+    
+    private boolean isOperatorWithSameGrade(String currentElement, String mainOperator)
+    {
+        BasicOperator operatorMain = getOperatorByString(mainOperator);
+        
+        if(isOperator(currentElement)){
+            BasicOperator operatorCurrent = getOperatorByString(currentElement);
+            return operatorCurrent.getGrade() == operatorMain.getGrade();
+        }
+        
+        return false;
+    }
+
+    private boolean isVariableOrValue(String currentElement)
+    {
+        return isVariable(currentElement) || isValue(currentElement);
+    }
+
     private String getInvertedOperator(String operator)
     {
         return OPERATOR_INVERTER.get(operator);
     }
-    
-    private String[] getOperationBlock(String[] formula, int currentBlockStart, int currentBlockEnd)
+
+    private List<String> getOperationBlock(List<String> formula, int currentBlockStart, int currentBlockEnd)
     {
-        return Arrays.copyOfRange(formula, currentBlockStart, currentBlockEnd);
+        return formula.subList(currentBlockStart, currentBlockEnd);
     }
 
     private int getLastNonOperatorLocation(String[] partialFormula, int startLocation)
@@ -200,9 +266,9 @@ public class FormulaSolver
         return 0;
     }
 
-    private String getMainOperator(String[] partialFormula)
+    private String getMainOperator(List<String> partialFormula)
     {
-        return partialFormula[partialFormula.length - 1];
+        return getLastElement(partialFormula);
     }
 
     private boolean isVariableIsolated(String partialFormula, String variable)
@@ -252,7 +318,17 @@ public class FormulaSolver
         }
         return Pattern.compile(pattern).matcher(string).matches();
     }
+    
+    private boolean isVariable(String string){
+        String pattern = ".*[a-zA-Z].*";
+        return Pattern.compile(pattern).matcher(string).matches();
+    }
 
+    private boolean isValue(String string){
+        String pattern = ".*[0-9].*";
+        return Pattern.compile(pattern).matcher(string).matches();
+    }
+    
     private String getShuntingYardFormat(String formula)
     {
         ShuntingYardAlgorithm shuntingYardAlgorithm = new ShuntingYardAlgorithm();
@@ -267,20 +343,81 @@ public class FormulaSolver
         return arrayToString(formulaLeft) + ASSIGN.getOperator() + arrayToString(formulaRight);
     }
 
-    private <T> T[] concatenateArrays(T[] first, T[] second) {
+    private <T> T[] concatenateArrays(T[] first, T[] second)
+    {
         int aLen = first.length;
         int bLen = second.length;
 
-        @SuppressWarnings("unchecked")
-        T[] newArray = (T[]) Array.newInstance(first.getClass().getComponentType(), aLen + bLen);
+        @SuppressWarnings("unchecked") T[] newArray =
+            (T[]) Array.newInstance(first.getClass().getComponentType(), aLen + bLen);
         System.arraycopy(first, 0, newArray, 0, aLen);
         System.arraycopy(second, 0, newArray, aLen, bLen);
 
         return newArray;
     }
-    
-    private String arrayToString(String[] array){
+
+    private List<String> combineLists(List<String> first, List<String> second)
+    {
+        return Stream.concat(first.stream(), second.stream()).collect(Collectors.toList());
+    }
+
+    private String arrayToString(String[] array)
+    {
         String string = Arrays.toString(array).replaceAll("[\\[\\],]", " ");
         return StringOperation.removeDuplicateSpaces(string);
+    }
+
+    private String arrayListToString(List<String> array)
+    {
+        String string = array.toString().replaceAll("[\\[\\],]", " ");
+        return StringOperation.removeDuplicateSpaces(string);
+    }
+}
+
+class FormulaTuple
+{
+    private List<String> withVar;
+    private List<String> withoutVar;
+
+    FormulaTuple(List<String> sideWithVariable, List<String> sideWithoutVariable)
+    {
+        this.withVar = sideWithVariable;
+        this.withoutVar = sideWithoutVariable;
+    }
+
+    public void switchSides(){
+        List<String> saveSideWithVariable = withVar;
+        withVar = withoutVar;
+        withoutVar = withVar;
+    }
+
+    public List<String> getWithoutVar()
+    {
+        return withoutVar;
+    }
+
+    public List<String> getWithVar()
+    {
+        return withVar;
+    }
+
+    public void setWithoutVar(List<String> withoutVar)
+    {
+        this.withoutVar = withoutVar;
+    }
+
+    public void setWithVar(List<String> withVar)
+    {
+        this.withVar = withVar;
+    }
+    
+    public void appendToWithoutVar(List<String> listToAppend){
+        this.withoutVar.addAll(listToAppend);
+    }
+
+    @Override
+    public String toString()
+    {
+        return withVar.toString() + " " + ASSIGN.getOperator() + " " + withoutVar.toString();
     }
 }

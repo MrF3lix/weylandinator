@@ -19,11 +19,13 @@ public abstract class Operator implements Token {
     private final int arity;
     private final int priority;
     private final String symbol;
+    private final Operator invertedOperation;
 
-    protected Operator(final String symbol, final int arity, final int priority) {
+    protected Operator(final String symbol, final int arity, final int priority, Operator invertedOperation) {
         this.symbol = symbol;
         this.arity = arity;
         this.priority = priority;
+        this.invertedOperation = invertedOperation;
     }
 
     protected void check(int length) throws ArityException
@@ -73,5 +75,10 @@ public abstract class Operator implements Token {
     @Override
     public String toString() {
         return symbol;
+    }
+
+    public Operator getInvertedOperation()
+    {
+        return invertedOperation;
     }
 }

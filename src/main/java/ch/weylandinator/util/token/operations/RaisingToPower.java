@@ -1,9 +1,9 @@
 package ch.weylandinator.util.token.operations;
 
 import ch.weylandinator.util.exceptions.ArityException;
-import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
+import ch.weylandinator.util.token.functions.SquareRoot;
 
 /**
  * @author Subhomoy Haldar
@@ -13,7 +13,7 @@ public class RaisingToPower extends Operator {
     public static final RaisingToPower INSTANCE = new RaisingToPower();
 
     private RaisingToPower() {
-        super("^", 2, EXPONENTIAL);
+        super("^", 2, EXPONENTIAL, SquareRoot.INSTANCE);
     }
 
     @Override

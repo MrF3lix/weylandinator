@@ -15,7 +15,7 @@ public class Assignment extends Operator {
     public static final Assignment INSTANCE = new Assignment();
 
     private Assignment() {
-        super("=", 2, ASSIGNMENT);
+        super("=", 2, ASSIGNMENT, null);
     }
 
     @Override

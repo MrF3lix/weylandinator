@@ -9,6 +9,7 @@ class FormulaSolverTest
 
 
     @Test
+    @Disabled
     void solveAdd(){
         String initialFormula = "1 = B + 3";
 
@@ -18,6 +19,7 @@ class FormulaSolverTest
 
 
     @Test
+    @Disabled
     void solveAddAndSubtract(){
         String initialFormula = "1 = B + 3 - 5";
         System.out.println(initialFormula);
@@ -33,6 +35,7 @@ class FormulaSolverTest
     }
 
     @Test
+    @Disabled
     void solveSubtract(){
         String initialFormula = "1 = B - 3";
         System.out.println(initialFormula);
@@ -40,6 +43,7 @@ class FormulaSolverTest
     }
 
     @Test
+    @Disabled
     void solveMultiply(){
         String initialFormula = "1 = B * 3";
         System.out.println(initialFormula);
@@ -47,6 +51,7 @@ class FormulaSolverTest
     }
 
     @Test
+    @Disabled
     void solveDivide(){
         String initialFormula = "4 = B / 3";
         System.out.println(initialFormula);
@@ -61,10 +66,4 @@ class FormulaSolverTest
         assertEquals(6.0, formulaSolver.solveFormula(initialFormula, "B"));
     }
     
-    @Test
-    void operationIsPositiv(){
-        assertTrue(formulaSolver.operationIsPositiv(new String[] {"X","+"}));
-        
-    }
-
 }

@@ -30,6 +30,8 @@ class ShuntingYardAlgorithmTest
         ,"+ A + B * C",                "A + B C * +"
         ,"A - B / (C + D) + E * F",     "A B C D + / - E F * +"
         ,"B + C - D",                "B C D - +"
+        ,"B + C - D - E",                "B C D - E - +"
+        ,"B - C - D + E",                "B C - D - E +"
     );
 
     @BeforeEach

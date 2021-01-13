@@ -1,7 +1,6 @@
 package ch.weylandinator.util.token.operations;
 
 import ch.weylandinator.util.exceptions.ArityException;
-import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 
@@ -13,7 +12,7 @@ public class Division extends Operator {
     public static final Division INSTANCE = new Division();
 
     private Division() {
-        super("/", 2, MULTIPLICATIVE);
+        super("/", 2, MULTIPLICATIVE, Multiplication.INSTANCE);
     }
 
     @Override

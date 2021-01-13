@@ -1,5 +1,6 @@
 package ch.weylandinator.util;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +36,13 @@ class EvaluateReversePolishNotationTest
     void quotient(){
         double result = evaluateReversePolishNotation.solvePolishReverseNotation("36 9 /");
         assertEquals(4, result, "36 / 9 = " + result);
+    }
+
+    @Test
+    @Disabled
+    void quotientWithPrefix(){
+        double result = evaluateReversePolishNotation.solvePolishReverseNotation("9 36 9 / +");
+        assertEquals(4.0, result, "+ 36 / 9 = " + result);
     }
     
     @Test 

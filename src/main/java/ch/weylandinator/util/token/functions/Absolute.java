@@ -15,7 +15,7 @@ public class Absolute extends Operator
     public static final Absolute INSTANCE = new Absolute();
 
     private Absolute() {
-        super("abs", 1, FUNCTIONAL);
+        super("abs", 1, FUNCTIONAL, null);
     }
 
     @Override

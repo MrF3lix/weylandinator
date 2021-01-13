@@ -1,7 +1,6 @@
 package ch.weylandinator.util.token.functions;
 
 import ch.weylandinator.util.exceptions.ArityException;
-import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 
@@ -15,7 +14,7 @@ public class Sine extends Operator {
     public static final Sine INSTANCE = new Sine();
 
     private Sine() {
-        super("sin", 1, FUNCTIONAL);
+        super("sin", 1, FUNCTIONAL, ArcSine.INSTANCE);
     }
 
     @Override

@@ -131,7 +131,7 @@ public class Calculator
         String[] formulaRight =
             StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(right)).split(" ");
 
-        FormulaTuple formulaTuple = new FormulaTuple(left, right);
+        FormulaTuple1 formulaTuple = new FormulaTuple1(left, right);
 
         while (!variableIsIsolatedWithPositivOperation(formulaTuple.formulatLeft, variable) &&
                !variableIsIsolatedWithPositivOperation(formulaTuple.formulaRight, variable)) {
@@ -161,7 +161,7 @@ public class Calculator
     //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
     //2 + 3 + 4 =  5 / (2 - X)    ---> [2] [5/(2-X)] [4] - Summanden  ---> 2 3 4 + + = 5 2 X - /
     //(2 - X) = 5 / (2 + 3 + 4)  ---> [2] [5/(2-X)] [4] - Summanden   ---> 2 X -     = 5 2 3 4 + + /
-    private FormulaTuple performInvertedOperation(String[] formulaRight, String[] formulaLeft, String unknownVariable, String operator)
+    private FormulaTuple1 performInvertedOperation(String[] formulaRight, String[] formulaLeft, String unknownVariable, String operator)
     {
         // Right to Left
         List<String> operationList = getOperationList(formulaRight, operator);
@@ -178,7 +178,7 @@ public class Calculator
         }
 
         formulaLeftNew = new StringBuilder(StringOperation.removeDuplicateSpaces(formulaLeftNew.toString()));
-        return new FormulaTuple(formulaLeftNew.toString(), formulaRightNew);
+        return new FormulaTuple1(formulaLeftNew.toString(), formulaRightNew);
     }
 
     private List<String> getOperationList(String[] formula, String operator)
@@ -224,7 +224,7 @@ public class Calculator
         return operationList;
     }
 
-    private FormulaTuple invertMainOperators(String formulatLeft, String formulaRight, String variable)
+    private FormulaTuple1 invertMainOperators(String formulatLeft, String formulaRight, String variable)
     {
         String sideWithVariable = formulatLeft;
         String nonVariableSide = formulaRight;
@@ -329,12 +329,12 @@ public class Calculator
     }
 }
 
-class FormulaTuple
+class FormulaTuple1
 {
     String formulatLeft;
     String formulaRight;
 
-    FormulaTuple(String formulatLeft, String formulaRight)
+    FormulaTuple1(String formulatLeft, String formulaRight)
     {
         this.formulatLeft = formulatLeft;
         this.formulaRight = formulaRight;

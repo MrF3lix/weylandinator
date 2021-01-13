@@ -8,11 +8,11 @@ import ch.weylandinator.util.token.Operator;
  * @author Subhomoy Haldar
  * @version 1.0
  */
-public class Addition extends Operator {
-    public static final Addition INSTANCE = new Addition();
+public class Subtraction extends Operator {
+    public static final Subtraction INSTANCE = new Subtraction();
 
-    private Addition() {
-        super("+", 2, ADDITIVE, Subtraction.INSTANCE);
+    private Subtraction() {
+        super("-", 1, ADDITIVE, Addition.INSTANCE);
     }
 
     @Override

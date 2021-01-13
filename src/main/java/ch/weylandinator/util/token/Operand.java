@@ -28,9 +28,15 @@ public interface Operand extends Token {
 
     Operand sine();
 
+    Operand arcSine();
+
     Operand cosine();
+    
+    Operand arcCosine();
 
     Operand tangent();
+    
+    Operand arcTangent();
 
     Operand exp();
 

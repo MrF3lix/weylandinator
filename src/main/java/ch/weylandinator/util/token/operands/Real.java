@@ -102,6 +102,12 @@ public class Real implements Operand
         return new Real(Math.sin(value));
     }
 
+    @Override
+    public Operand arcSine()
+    {
+        return new Real(Math.asin(value));
+    }
+
     /**
      * Returns the cosine of this real number.
      *
@@ -113,6 +119,12 @@ public class Real implements Operand
         return new Real(Math.cos(value));
     }
 
+    @Override
+    public Operand arcCosine()
+    {
+        return new Real(Math.acos(value));
+    }
+
     /**
      * Returns the tangent of this real number.
      *
@@ -122,6 +134,12 @@ public class Real implements Operand
     @Override
     public Operand tangent() {
         return new Real(Math.tan(value));
+    }
+
+    @Override
+    public Operand arcTangent()
+    {
+        return new Real(Math.atan(value));
     }
 
     /**

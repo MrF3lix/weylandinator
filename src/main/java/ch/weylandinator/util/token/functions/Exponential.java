@@ -1,9 +1,9 @@
 package ch.weylandinator.util.token.functions;
 
 import ch.weylandinator.util.exceptions.ArityException;
-import ch.weylandinator.util.exceptions.EvaluationException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
+import ch.weylandinator.util.token.operations.RaisingToPower;
 
 /**
  * Wrapper for the Exponential function (exp).
@@ -15,7 +15,7 @@ public class Exponential extends Operator {
     public static final Exponential INSTANCE = new Exponential();
 
     private Exponential() {
-        super("exp", 1, FUNCTIONAL);
+        super("exp", 1, FUNCTIONAL, RaisingToPower.INSTANCE);
     }
 
     @Override

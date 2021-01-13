@@ -5,21 +5,21 @@ import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 
 /**
- * Wrapper for the Cosine function (cos).
+ * Wrapper for the Sine function (sin).
  *
  * @author Subhomoy Haldar
  * @version 2017.04.20
  */
-public class Cosine extends Operator {
-    public static final Cosine INSTANCE = new Cosine();
+public class ArcSine extends Operator {
+    public static final ArcSine INSTANCE = new ArcSine();
 
-    private Cosine() {
-        super("cos", 1, FUNCTIONAL, ArcCosine.INSTANCE);
+    private ArcSine() {
+        super("arcsin", 1, FUNCTIONAL, Sine.INSTANCE);
     }
 
     @Override
     public Operand evaluate(Operand... operands) throws ArityException {
         check(operands.length);
-        return operands[0].cosine();
+        return operands[0].arcSine();
     }
 }
