@@ -29,7 +29,11 @@ public class ResistanceCalculator {
             numberOfResistors = getNumberOfResistors(totalElements);
 
             index++;
-        } while (numberOfResistors > 1 || index > 9999);
+        } while (numberOfResistors > 1 && index < 9999);
+
+        if(index == 9999) {
+            throw new RuntimeException("Something went wrong, the total resistance couldn't be calculated");
+        }
 
         return getSumOfResistors(CircuitElementHelper.getFlatList(root.getChildElements()));
     }
