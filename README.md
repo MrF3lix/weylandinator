@@ -22,7 +22,7 @@ The Weylandinator is a tool to simulate circuits with voltage sources, resistors
 
 ## Installation
 
-- Download the latest installer from the Release page.
+- Download the latest installer from the release page.
 - Execute the installer.
 - Open the Weylandinator.
 
