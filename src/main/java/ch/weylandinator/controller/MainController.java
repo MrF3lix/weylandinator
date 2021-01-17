@@ -20,7 +20,6 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -66,8 +65,7 @@ public class MainController implements Initializable, CircuitObserver {
             totalResistance = -1;
         }
 
-        List<CircuitElement> elements = stateManager.getAllElements();
-        circuitCanvas.update(elements, totalResistance);
+        circuitCanvas.update(stateManager.getRootElement(), totalResistance);
     }
 
     @Override
@@ -151,6 +149,9 @@ public class MainController implements Initializable, CircuitObserver {
     public void delete_onAction() {
         try {
             stateManager.deleteElementByName(selectedElement.getName());
+            selectedElement = null;
+            updateSelectedElementValue();
+            elementNames.getSelectionModel().clearSelection();
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -174,9 +175,15 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     private void updateSelectedElementValue() {
-        resistance.setText(String.valueOf(selectedElement.getResistance()));
-        voltage.setText(String.valueOf(selectedElement.getVoltage()));
-        current.setText(String.valueOf(selectedElement.getCurrent()));
+        if(selectedElement != null) {
+            resistance.setText(String.valueOf(selectedElement.getResistance()));
+            voltage.setText(String.valueOf(selectedElement.getVoltage()));
+            current.setText(String.valueOf(selectedElement.getCurrent()));
+        } else {
+            resistance.clear();
+            voltage.clear();
+            current.clear();
+        }
     }
 
     private void updateElements() {
