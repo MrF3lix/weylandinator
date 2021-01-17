@@ -1,9 +1,13 @@
 package ch.weylandinator.util;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import ch.weylandinator.model.CircuitElement;
+import ch.weylandinator.model.Position;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,21 +19,54 @@ public class CircuitCanvas {
 
     private Canvas canvas;
 
-    private List<CircuitElement> elements;
+    private Map<CircuitElement, Position> canvasElements = new HashMap<>();
 
-    private int cols;
+    private int totalRows = 0;
+    private int totalCols = 0;
+
+    private int curRow = 0;
+    private int curCol = 0;
 
     public CircuitCanvas(Canvas canvas) {
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
     }
 
-    public void update(List<CircuitElement> elements, double totalResistance) {
-        this.elements = elements;
+    public void update(CircuitElement root, double totalResistance) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        //Set main Voltage Source
+        canvasElements = new HashMap<>();
+        CircuitElement voltageSource = root.getChildElements().get(0);
+        canvasElements.put(voltageSource, new Position(0, 0));
+
+        curRow = -1;
+        curCol = 1;
+        setCanvasElements(voltageSource.getChildElements(), curRow);
+
+        totalCols = canvasElements.entrySet().stream().max((x,y) -> x.getValue().getCol() - y.getValue().getCol()).get().getValue().getCol()+1;
+        totalRows = canvasElements.entrySet().stream().max((x,y) -> x.getValue().getRow() - y.getValue().getRow()).get().getValue().getRow()+1;
+
         showCircuitInformation(totalResistance);
 
         printCircuit();
+    }
+
+    private void setCanvasElements(List<CircuitElement> elements, int level) {
+        level++;
+        if(elements.size() > 1) {
+            curCol--;
+        } 
+
+        for(CircuitElement element : elements) {
+            if(elements.size() > 1) {
+                //TODO add connection element
+                canvasElements.put(element, new Position(level, ++curCol));
+            } else {
+                canvasElements.put(element, new Position(level, curCol));
+            }
+            setCanvasElements(element.getChildElements(), level);
+        }
     }
 
     private void showCircuitInformation(double totalResistance) {
@@ -39,23 +76,20 @@ public class CircuitCanvas {
     }
 
     private void printCircuit() {
-        cols = 0;
-        Iterator<CircuitElement> it = elements.iterator();
+        Iterator<Entry<CircuitElement, Position>> it = canvasElements.entrySet().iterator();
 
         while (it.hasNext()) {
-            CircuitElement element = it.next();
+            Entry<CircuitElement, Position> element = it.next();
 
-            switch (element.getType()) {
+            switch (element.getKey().getType()) {
                 case VOLTAGE_SOURCE:
-                    printVoltageSource(element, getPosition());
+                    printVoltageSource(element.getKey(), element.getValue().getCoords());
                     break;
                 case RESISTOR:
-                    printResistor(element, getPosition());
+                    printResistor(element.getKey(), element.getValue().getCoords());
                 default:
                     break;
             }
-
-            cols++;
         }
 
         drawConnections();
@@ -86,27 +120,14 @@ public class CircuitCanvas {
         gc.fillText(element.getName(), x + width, y);
     }
 
-    private Point2D getPosition() {
-        // TODO improve layout
-        return new Point2D(getColX(cols), canvas.getHeight() / 2);
-    }
-
-    private double getColX(int index) {
-        return index * 170 + 70;
-    }
-
     private void drawConnections() {
-        double width = getColX(cols-1);
+        double width = Position.getColX(totalCols-1);
 
         double top = 50;
-        double bottom = canvas.getHeight()-50;
+        double bottom = Position.getRowY(totalRows-1)+50;
 
         gc.strokeLine(70, top, width, top);
         gc.strokeLine(70, bottom, width, bottom);
-
-        for(int i = 0; i < cols; i++) {
-            gc.strokeLine(getColX(i), top, getColX(i), canvas.getHeight()/2-50);
-            gc.strokeLine(getColX(i), bottom, getColX(i), canvas.getHeight()/2+50);
-        }
+        gc.strokeLine(Position.getColX(0), top, Position.getColX(0), bottom);
     }
 }
