@@ -5,6 +5,7 @@ import ch.weylandinator.model.CircuitElementType;
 import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
 import ch.weylandinator.util.Calculator;
+import ch.weylandinator.util.CircuitCanvas;
 import ch.weylandinator.util.Formula;
 import ch.weylandinator.util.ResistanceCalculator;
 import javafx.beans.value.ChangeListener;
@@ -12,13 +13,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +30,6 @@ import static ch.weylandinator.model.CircuitElementType.VOLTAGE_SOURCE;
 
 public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
-    private GraphicsContext gc;
 
     @FXML
     private ChoiceBox<CircuitElementType> elementType;
@@ -47,9 +45,7 @@ public class MainController implements Initializable, CircuitObserver {
 
     private CircuitElement selectedElement;
 
-    private double resultCurrent;
-
-    private double totalResistance;
+    private CircuitCanvas circuitCanvas;
 
     public MainController() {
         stateManager.addObserver(this);
@@ -61,19 +57,26 @@ public class MainController implements Initializable, CircuitObserver {
      */
     @Override
     public void updated() {
-        // Recalculate total resistance
-
-        totalResistance = new ResistanceCalculator(stateManager.getRootElement()).getTotalResistance();
         updateElements();
-        displayCircuit();
+
+        double totalResistance;
+        try {
+            totalResistance = new ResistanceCalculator(stateManager.getRootElement()).getTotalResistance();
+        } catch (Exception e) {
+            totalResistance = -1;
+        }
+
+        List<CircuitElement> elements = stateManager.getAllElements();
+        circuitCanvas.update(elements, totalResistance);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        circuitCanvas = new CircuitCanvas(canvas);
+
         elementType.getItems().setAll(CircuitElementType.values());
         elementType.getSelectionModel().selectFirst();
-
-        gc = canvas.getGraphicsContext2D();
 
         fillCircuit();
 
@@ -160,9 +163,6 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void solve_onAction() {
         Calculator calculator = new Calculator();
-
-        // --->
-
         calculator.solveCircuit(stateManager.getAllElements());
 
         Formula formula = Formula.URI;
@@ -170,7 +170,6 @@ public class MainController implements Initializable, CircuitObserver {
         variableMap.put("R", 1.4);
         variableMap.put("I", 100.0);
 
-        resultCurrent = calculator.solve(formula, variableMap, "U");
         updated();
     }
 
@@ -187,53 +186,9 @@ public class MainController implements Initializable, CircuitObserver {
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
     }
 
-    private void displayCircuit() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        showCircuitInformation();
-
-        List<CircuitElement> elements = stateManager.getAllElements();
-
-        for (int i = 0; i < elements.size(); i++) {
-            displayElement(getCanvasPosition(i), elements.get(i).getName());
-        }
-
-    }
-
-    private void showCircuitInformation() {
-        gc.fillText("U - Spannung: ??? V", 10, 10);
-        gc.fillText("R - Wiederstand: " + String.format("%.2f", totalResistance) + " Ohm", 10, 30);
-        gc.fillText("I - Strom: " + resultCurrent + " A", 10, 50);
-    }
-
-    private void displayElement(Point point, String name) {
-        int width = 100;
-        int height = 30;
-        gc.strokeRoundRect(point.x - width / 2, point.y - height / 2, width, height, 10, 10);
-        gc.fillText(name, point.x - width / 2 + 5, point.y - height / 2 + 20);
-    }
-
-    /**
-     * This method will give you the coordinates of a point on a 5x5 point-grid.
-     * 
-     * 0 1 2 3 4 ... 5 6 7 8 9 ... etc
-     * 
-     * @param index
-     * @return Point The coordinates
-     */
-    private Point getCanvasPosition(int index) {
-        int gridSize = 4;
-
-        int size = (int) canvas.getHeight();
-        int spacing = Math.round(size / (gridSize + 1));
-
-        return new Point(index % gridSize * spacing + spacing, (index / gridSize) * spacing + spacing);
-    }
-
-    // for testing
     private void fillCircuit() {
         CircuitElement e1 = new CircuitElement();
-        e1.setName("Voltage Source");
+        e1.setName("U");
         e1.setType(VOLTAGE_SOURCE);
         stateManager.addElementToCircuit(e1);
 
@@ -241,7 +196,7 @@ public class MainController implements Initializable, CircuitObserver {
         r1.setName("r1");
         r1.setType(RESISTOR);
         r1.setResistance(1000d);
-        stateManager.addElementToCircuit("Voltage Source", r1);
+        stateManager.addElementToCircuit("U", r1);
 
         CircuitElement r2 = new CircuitElement();
         r2.setName("r2");
