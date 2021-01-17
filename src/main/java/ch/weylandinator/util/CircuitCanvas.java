@@ -57,11 +57,13 @@ public class CircuitCanvas {
 
             cols++;
         }
+
+        drawConnections();
     }
 
     private void printVoltageSource(CircuitElement element, Point2D location) {
         int radius = VOLTAGE_SOURCE_RADIUS;
-        int padding = 10;
+        int padding = 25;
         double x = location.getX();
         double y = location.getY();
 
@@ -73,7 +75,7 @@ public class CircuitCanvas {
 
     private void printResistor(CircuitElement element, Point2D location) {
         int width = 20;
-        int height = 70;
+        int height = 80;
         int padding = 10;
         double x = location.getX();
         double y = location.getY();
@@ -86,6 +88,25 @@ public class CircuitCanvas {
 
     private Point2D getPosition() {
         // TODO improve layout
-        return new Point2D(cols * 170 + 70, canvas.getHeight() / 2);
+        return new Point2D(getColX(cols), canvas.getHeight() / 2);
+    }
+
+    private double getColX(int index) {
+        return index * 170 + 70;
+    }
+
+    private void drawConnections() {
+        double width = getColX(cols-1);
+
+        double top = 50;
+        double bottom = canvas.getHeight()-50;
+
+        gc.strokeLine(70, top, width, top);
+        gc.strokeLine(70, bottom, width, bottom);
+
+        for(int i = 0; i < cols; i++) {
+            gc.strokeLine(getColX(i), top, getColX(i), canvas.getHeight()/2-50);
+            gc.strokeLine(getColX(i), bottom, getColX(i), canvas.getHeight()/2+50);
+        }
     }
 }
