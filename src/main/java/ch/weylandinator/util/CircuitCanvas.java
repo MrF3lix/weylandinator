@@ -12,7 +12,6 @@ import ch.weylandinator.model.Position;
 import ch.weylandinator.model.ResizableCanvas;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class CircuitCanvas extends ResizableCanvas {
     private int VOLTAGE_SOURCE_RADIUS = 25;

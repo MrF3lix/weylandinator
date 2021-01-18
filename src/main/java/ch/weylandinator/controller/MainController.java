@@ -2,7 +2,6 @@ package ch.weylandinator.controller;
 
 import ch.weylandinator.model.CircuitElement;
 import ch.weylandinator.model.CircuitElementType;
-import ch.weylandinator.model.ResizableCanvas;
 import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
 import ch.weylandinator.util.Calculator;
@@ -13,11 +12,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
