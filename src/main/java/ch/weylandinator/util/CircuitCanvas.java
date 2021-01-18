@@ -61,7 +61,6 @@ public class CircuitCanvas {
 
         for(CircuitElement element : elements) {
             if(elements.size() > 1) {
-                //TODO add connection element
                 canvasElements.put(element, new Position(level, ++curCol));
             } else {
                 canvasElements.put(element, new Position(level, curCol));
@@ -82,13 +81,13 @@ public class CircuitCanvas {
         while (it.hasNext()) {
             Entry<CircuitElement, Position> element = it.next();
 
-                for(CircuitElement child : element.getKey().getChildElements()) {
-                    Optional<Entry<CircuitElement, Position>> childElement = canvasElements.entrySet().stream().filter(c -> child.getName().equals(c.getKey().getName())).findFirst();
+            for(CircuitElement child : element.getKey().getChildElements()) {
+                Optional<Entry<CircuitElement, Position>> childElement = canvasElements.entrySet().stream().filter(c -> child.getName().equals(c.getKey().getName())).findFirst();
 
-                    if(childElement.isPresent()) {
-                        drawConnection(element.getValue(), childElement.get().getValue());
-                    }
+                if(childElement.isPresent()) {
+                    drawConnection(element.getValue(), childElement.get().getValue());
                 }
+            }
 
             switch (element.getKey().getType()) {
                 case VOLTAGE_SOURCE:
@@ -135,7 +134,6 @@ public class CircuitCanvas {
     }
 
     private void drawConnection(Position startPosition, Position endLocation) {
-
         Point2D start = startPosition.getCoords();
         Point2D end = endLocation.getCoords();
 
@@ -148,7 +146,6 @@ public class CircuitCanvas {
 
     private void drawConnections() {
         double width = Position.getColX(totalCols-1);
-
         double top = 50;
         double bottom = Position.getRowY(totalRows-1)+50;
 

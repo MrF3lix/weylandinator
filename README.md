@@ -29,7 +29,7 @@ The Weylandinator is a tool to simulate circuits with voltage sources, resistors
 ## How to use it
 
 1. Open the Weylandinator
-![Weylandinator](./img/weylandinator-screenshot.png)
+![Weylandinator](./img/weylandinator-screenshot-v1.0.0.png)
 1. Add as many elements as you need
 1. Add the parameter that you have for each element
 1. Press "Solve" to calculate the remaining parameters.
@@ -38,7 +38,7 @@ The Weylandinator is a tool to simulate circuits with voltage sources, resistors
 
 This is a sample circuit that could be represented using the Weylandinator.
 
-![Sample Circuits](./docs/beispiel.dio.svg)
+![Sample Circuits](./img/beispiel.png)
 
 ## Sample Data
 
