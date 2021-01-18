@@ -159,6 +159,10 @@ public class CircuitCanvas extends ResizableCanvas {
             lineColor = Color.BLUE;
             fillColor = Color.LIGHTBLUE;
         }
+
+        //fill
+        gc.setFill(fillColor);
+        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
         
         //line
         gc.setStroke(lineColor);
@@ -167,10 +171,6 @@ public class CircuitCanvas extends ResizableCanvas {
         
         //outline
         gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
-        
-        //fill
-        gc.setFill(fillColor);
-        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
         
         //text
         gc.setFill(textColor);
@@ -197,23 +197,25 @@ public class CircuitCanvas extends ResizableCanvas {
             fillColor = Color.LIGHTBLUE;
         }
 
+        //fill
+        gc.setFill(fillColor);
+        gc.fillRect(x - width / 2, y - height / 2, width, height);
+        
         //lines
         gc.setStroke(lineColor);
+        gc.setLineWidth(2.0);
         gc.strokeLine(x, y - height / 2 - padding, x, y - height / 2);
-        gc.strokeRect(x - width / 2, y - height / 2, width, height);
         gc.strokeLine(x, y + height / 2 + padding, x, y + height / 2);
         if(element.getChildElements().size() == 0) {
             double bottom = Position.getRowY(totalRows-1)+50;
             gc.strokeLine(x, y + height / 2, x,bottom);
         }
         
-        //fill
-        gc.setFill(fillColor);
-        gc.fillRect(x - width / 2, y - height / 2, width, height);
+        //outline
+        gc.strokeRect(x - width / 2, y - height / 2, width, height);
         
         //text
         gc.setFill(textColor);
-        gc.setLineWidth(2.0);
         gc.fillText(element.getName(), x + width/2 + padding, y);
 
         gc.setStroke(Color.BLACK);
