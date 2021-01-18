@@ -213,6 +213,7 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     private void selectElement(String name) {
+        elementNames.setValue(name);
         selectedElement = stateManager.findElementByName(name);
         updateSelectedElementValue();
 
