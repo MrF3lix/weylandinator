@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -236,13 +237,15 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     private void updateElements() {
+        List<CircuitElement> allElements = stateManager.getAllElements();
+
         elementNames.getItems()
-                .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+                .setAll(allElements.stream().map(n -> n.getName()).collect(Collectors.toList()));
         parentElementOfNewElement.getItems()
-                .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+                .setAll(allElements.stream().map(n -> n.getName()).collect(Collectors.toList()));
 
         parentElementOfSelectedElement.getItems()
-                .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+                .setAll(allElements.stream().map(n -> n.getName()).collect(Collectors.toList()));
 
         if (selectedElement != null) {
             elementNames.setValue(selectedElement.getName());
