@@ -43,7 +43,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: MacOs
-        path: "build/jpackage/${{ env.pkg-name }}"
+        path: "build/jpackage/"
 
   windows:
     runs-on: [windows-latest]
