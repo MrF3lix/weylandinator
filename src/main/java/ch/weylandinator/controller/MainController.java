@@ -34,7 +34,7 @@ public class MainController implements Initializable, CircuitObserver {
     private ChoiceBox<CircuitElementType> elementType;
 
     @FXML
-    private ChoiceBox<String> elementNames, availableElements, parentElementOfSelectedElement;
+    private ChoiceBox<String> elementNames, parentElementOfNewElement, parentElementOfSelectedElement;
 
     @FXML
     private TextField name, start, end, elementValue, resistance, voltage, current;
@@ -124,7 +124,7 @@ public class MainController implements Initializable, CircuitObserver {
                     break;
             }
 
-            String parentElementName = availableElements.getSelectionModel().getSelectedItem();
+            String parentElementName = parentElementOfNewElement.getSelectionModel().getSelectedItem();
             if (parentElementName != null) {
                 newElement.setParentName(parentElementName);
             } else {
@@ -220,7 +220,7 @@ public class MainController implements Initializable, CircuitObserver {
     private void updateElements() {
         elementNames.getItems()
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
-        availableElements.getItems()
+        parentElementOfNewElement.getItems()
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
 
         parentElementOfSelectedElement.getItems()
