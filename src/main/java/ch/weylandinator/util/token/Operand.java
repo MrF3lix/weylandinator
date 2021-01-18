@@ -44,5 +44,5 @@ public interface Operand extends Token {
 
     Operand abs();
 
-    Operand log();
+    Operand ln();
 }

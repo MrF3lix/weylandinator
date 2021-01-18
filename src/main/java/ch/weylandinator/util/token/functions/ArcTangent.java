@@ -5,7 +5,7 @@ import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 
 /**
- * Wrapper for the Tangent function (tan).
+ * Wrapper for the Tangent function (atan).
  *
  * @author Subhomoy Haldar
  * @version 2017.04.20
@@ -14,7 +14,7 @@ public class ArcTangent extends Operator {
     public static final ArcTangent INSTANCE = new ArcTangent();
 
     private ArcTangent() {
-        super("arctan", 1, FUNCTIONAL, ArcTangent.INSTANCE);
+        super("arctan", 1, FUNCTIONAL, Tangent.INSTANCE);
     }
 
     @Override

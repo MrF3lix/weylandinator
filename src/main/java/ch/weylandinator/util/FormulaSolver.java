@@ -288,7 +288,7 @@ public class FormulaSolver
 
     private boolean isOperator(String string)
     {
-        for (StandardOperator s : StandardOperator.values()) {
+        for (BasicOperator s : BasicOperator.values()) {
             if (s.getOperator().equals(string)) {
                 return true;
             }

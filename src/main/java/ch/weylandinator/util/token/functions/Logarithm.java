@@ -12,12 +12,12 @@ public class Logarithm extends Operator {
     public static final Logarithm INSTANCE = new Logarithm();
 
     private Logarithm() {
-        super("log", 1, FUNCTIONAL, null);
+        super("ln", 1, FUNCTIONAL, Exponential.INSTANCE);
     }
 
     @Override
     public Operand evaluate(Operand... operands) throws ArityException {
         check(operands.length);
-        return operands[0].log();
+        return operands[0].ln();
     }
 }

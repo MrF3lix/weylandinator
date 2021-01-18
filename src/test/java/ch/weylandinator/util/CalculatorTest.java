@@ -1,9 +1,5 @@
 package ch.weylandinator.util;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 class CalculatorTest
 {
 
@@ -13,7 +9,7 @@ class CalculatorTest
     void setUp()
     {
     }
-    
+    /*
     @Test
     void solveAdd(){
         String initialFormula = "1 = B + 3";
@@ -84,6 +80,6 @@ class CalculatorTest
     private String prepareForSolve(String dissolvedFormula){
         System.out.println(dissolvedFormula);
         return dissolvedFormula.split("=")[1].trim();
-    }
+    }*/
     
 }

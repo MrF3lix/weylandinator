@@ -114,7 +114,7 @@ public class Variable implements Operand
     }
 
     @Override
-    public Operand arcSine()
+    public Operand arcSine() throws EvaluationException
     {
         return new Real(getValue()).arcSine();
     }
@@ -132,7 +132,7 @@ public class Variable implements Operand
     }
 
     @Override
-    public Operand arcCosine()
+    public Operand arcCosine() throws EvaluationException
     {
         return new Real(getValue()).arcCosine();
     }
@@ -150,7 +150,7 @@ public class Variable implements Operand
     }
 
     @Override
-    public Operand arcTangent()
+    public Operand arcTangent() throws EvaluationException
     {
         return new Real(getValue()).arcTangent();
     }
@@ -200,8 +200,8 @@ public class Variable implements Operand
      *                             is negative.
      */
     @Override
-    public Operand log() throws EvaluationException {
-        return new Real(getValue()).log();
+    public Operand ln() throws EvaluationException {
+        return new Real(getValue()).ln();
     }
 
     /**

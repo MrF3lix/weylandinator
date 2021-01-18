@@ -2,38 +2,10 @@ package ch.weylandinator.util;
 
 import ch.weylandinator.model.CircuitElement;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-import static ch.weylandinator.util.StandardOperator.*;
-
-enum StandardOperator
-{
-    ADD("+", true), SUBTRACT("-", false), MULTIPLY("*", true), DIVIDE("/", false);
-
-    private final String operator;
-    private final boolean isPositivOperator;
-
-    StandardOperator(String operator, boolean isPositivOperator)
-    {
-        this.operator = operator;
-        this.isPositivOperator = isPositivOperator;
-    }
-
-    public String getOperator()
-    {
-        return operator;
-    }
-
-    public boolean isPositivOperator()
-    {
-        return isPositivOperator;
-    }
-}
 
 /**
  * Greek Symobls
@@ -49,7 +21,6 @@ public class Calculator
     public static final String SIGMA_L = "\u03A3";
     public static final String OMEGA_L = "\u03A9";
     public static final String RHO_S = "\u03C1";
-    private static final Map<String, String> OPERATOR_INVERTER = Map.of("+", "-", "-", "+", "*", "/", "/", "*");
 
     public List<CircuitElement> solveCircuit(List<CircuitElement> elementList)
     {
@@ -79,10 +50,6 @@ public class Calculator
                 formula = Formula.URI;
             }
 
-            if (hasExactlyOneUnknown(formula, variableMap)) {
-
-                result = solve(formula, variableMap, "TODO");
-            }
         }
 
         return null;
@@ -99,244 +66,11 @@ public class Calculator
         return expression.evaluate().getValue();
     }
 
-    public String dissolveByVariable(String form, String variable)
-    {
-        //3 = 2 + X     ---> - Summand
-        //3 = 10 - X    ---> + X
-        //21 = 3 * X    ---> / Faktor
-        //3 = 30 / X    ---> * X
-
-        //3 = 2 + X * 2 + 4     ---> [2] [X*2] [4] - Summanden  
-
-        //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
-        //2 + 3 + 4 =  5 / (2 - X)    ---> [2] [5/(2-X)] [4] - Summanden  ---> 2 3 4 + + = 5 2 X - /
-        //(2 - X) = 5 / (2 + 3 + 4)  ---> [2] [5/(2-X)] [4] - Summanden   ---> 2 X -     = 5 2 3 4 + + /
-
-        //3 = 3 * (X + 2)         ---> [3] [X+2] - Faktoren ---> 3 X 2 + *
-        //3 / 3 = X + 2         ---> [X] [2] - Summanden ---> 3 3 / = X 2 +
-
-        // 1. Ist Unbekannte Links vom Gleich Zeichen?
-        // -> Wenn Rechts 
-        // 2. Split by Space / Delimiter
-        // 3. [Value] [Operator] 
-        // 4. Prüfen ob Hauptoperation Summe oder Produkt
-
-        ShuntingYardAlgorithm shuntingYardAlgorithm = new ShuntingYardAlgorithm();
-
-        String[] equationLeftRight = StringOperation.removeDuplicateSpaces(form).split("=");
-        String left = equationLeftRight[0];
-        String right = equationLeftRight[1];
-        String[] formulaLeft =
-            StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(left)).split(" ");
-        String[] formulaRight =
-            StringOperation.removeDuplicateSpaces(shuntingYardAlgorithm.shuntingYard(right)).split(" ");
-
-        FormulaTuple1 formulaTuple = new FormulaTuple1(left, right);
-
-        while (!variableIsIsolatedWithPositivOperation(formulaTuple.formulatLeft, variable) &&
-               !variableIsIsolatedWithPositivOperation(formulaTuple.formulaRight, variable)) {
-
-            //TODO Check if Variable is negated or divisor
-            if (variableIsIsolatedWitNegativOperators(formulaTuple.formulatLeft, variable) ||
-                variableIsIsolatedWitNegativOperators(formulaTuple.formulaRight, variable))
-            {
-                formulaTuple = invertMainOperators(formulaTuple.formulatLeft, formulaTuple.formulaRight, variable);
-            }
-            
-            switch (getLast(formulaRight)) {
-                case "+" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "+");
-                case "-" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "-");
-                case "/" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "/");
-                case "*" -> formulaTuple = performInvertedOperation(formulaRight, formulaLeft, variable, "*");
-            }
-        }
-
-        if (variableIsIsolatedWithPositivOperation(formulaTuple.formulatLeft, variable)) {
-            return removePositivOperators(formulaTuple.formulatLeft) + " = " + formulaTuple.formulaRight;
-        } else {
-            return removePositivOperators(formulaTuple.formulaRight) + " = " + formulaTuple.formulatLeft;
-        }
-    }
-
-    //3 = 2 + 5 / (2 - X) + 4   ---> [2] [5/(2-X)] [4] - Summanden    ---> 3         = 2 5 2 X - / + 4 +
-    //2 + 3 + 4 =  5 / (2 - X)    ---> [2] [5/(2-X)] [4] - Summanden  ---> 2 3 4 + + = 5 2 X - /
-    //(2 - X) = 5 / (2 + 3 + 4)  ---> [2] [5/(2-X)] [4] - Summanden   ---> 2 X -     = 5 2 3 4 + + /
-    private FormulaTuple1 performInvertedOperation(String[] formulaRight, String[] formulaLeft, String unknownVariable, String operator)
-    {
-        // Right to Left
-        List<String> operationList = getOperationList(formulaRight, operator);
-
-        //Subtract
-        String formulaRightNew = "";
-        StringBuilder formulaLeftNew = new StringBuilder(String.join(" ", formulaLeft) + " ");
-        for (String string : operationList) {
-            if (containsVariable(string, unknownVariable)) {
-                formulaRightNew = string;
-            } else {
-                formulaLeftNew.append(invertOperator(string, operator)).append(" ");
-            }
-        }
-
-        formulaLeftNew = new StringBuilder(StringOperation.removeDuplicateSpaces(formulaLeftNew.toString()));
-        return new FormulaTuple1(formulaLeftNew.toString(), formulaRightNew);
-    }
-
-    private List<String> getOperationList(String[] formula, String operator)
-    {
-        List<String> operationList = new ArrayList<>();
-        int operatorCount = 1;
-        boolean wasOperator = true;
-
-        //Summands -> ArrayList 1 = 3 + X / 2 ---> [3 +] [X 2 / +]
-        // X 2 /
-        // + <-> -
-        // * <-> /
-        StringBuilder currentOperation = new StringBuilder(operator);
-        for (int i = formula.length - 2; i >= 0; i--) {
-
-            if (isOperator(formula[i])) {
-                if (!wasOperator) {
-                    operationList.add(currentOperation.toString().trim());
-                    currentOperation = new StringBuilder();
-                }
-                currentOperation.insert(0, formula[i] + " ");
-                operatorCount++;
-                wasOperator = true;
-            } else {
-
-                if (operatorCount == 0) {
-                    operationList.add(currentOperation.toString().trim());
-                    String operatorToAppend = operator;
-                    if (operator.equals("-") || operator.equals("/")) {
-                        operatorToAppend = OPERATOR_INVERTER.get(operatorToAppend);
-                    }
-                    operationList.add(formula[i] + " " + operatorToAppend);
-
-                    currentOperation = new StringBuilder();
-                } else {
-
-                    currentOperation.insert(0, formula[i] + " ");
-                }
-                operatorCount--;
-                wasOperator = false;
-            }
-        }
-        return operationList;
-    }
-
-    private FormulaTuple1 invertMainOperators(String formulatLeft, String formulaRight, String variable)
-    {
-        String sideWithVariable = formulatLeft;
-        String nonVariableSide = formulaRight;
-        if(formulaRight.contains(variable))
-        {
-            sideWithVariable = formulaRight;
-            nonVariableSide = formulatLeft;
-        }
-        
-        if(sideWithVariable.substring(sideWithVariable.length() - 1).equals(SUBTRACT.getOperator())){
-            
-            //TODO Negated -> Negate Non-Variable-Side / remove variable-Negation    
-        }
-        else{
-            //TODO Divisor -> Divide By Non-Variable-Side / Multiply by Variable(-Side)
-        }
-        return null;
-    }
 
     private boolean hasDefaultValue(double value)
     {
         return value == 0d;
     }
 
-    private String removePositivOperators(String string)
-    {
-        return string.replaceAll("[" + ADD.getOperator() + MULTIPLY.getOperator() + "]", "").trim();
-    }
-
-    private String removeNegativOperators(String string)
-    {
-        return string.replaceAll("[" + SUBTRACT.getOperator() + DIVIDE.getOperator() + "]", "").trim();
-    }
-
-    private boolean variableIsIsolatedWithPositivOperation(String partialFormula, String variable)
-    {
-        if (partialFormula == null || partialFormula.isEmpty()) {
-            return false;
-        }
-
-        return removePositivOperators(partialFormula).equals(variable);
-    }
-
-    private boolean variableIsIsolatedWitNegativOperators(String partialFormula, String variable)
-    {
-        if (partialFormula == null || partialFormula.isEmpty()) {
-            return false;
-        }
-
-        return removeNegativOperators(partialFormula).equals(variable);
-    }
-
-    private boolean hasExactlyOneUnknown(Formula formula, Map<String, Double> variableMap)
-    {
-        return formula.numberOfVariables() == variableMap.size() + 1;
-    }
-
-    private String invertOperator(String string, String operator)
-    {
-        return string.replaceAll(MessageFormat.format("\\{0}", operator), getInvertedOperator(operator));
-    }
-
-    private boolean containsVariable(String string, String unknownVariable)
-    {
-        String pattern;
-        if (unknownVariable == null || unknownVariable.isEmpty()) {
-            pattern = ".*[a-zA-Z].*";
-        } else {
-            pattern = ".*[" + unknownVariable + "].*";
-        }
-        return Pattern.compile(pattern).matcher(string).matches();
-    }
-
-    private boolean isOperator(String string)
-    {
-        for (StandardOperator s : StandardOperator.values()) {
-            if (s.getOperator().equals(string)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String getInvertedOperator(String operator)
-    {
-        return OPERATOR_INVERTER.get(operator);
-    }
-
-    private String getLast(String[] array)
-    {
-        return array[array.length - 1];
-    }
-
-    private int getEqualsLocation(Formula formula)
-    {
-        return formula.toString().indexOf("=");
-    }
-
-    private int getVariableLocation(Formula formula, String resolveByVariable)
-    {
-        return formula.toString().indexOf(resolveByVariable);
-    }
 }
 
-class FormulaTuple1
-{
-    String formulatLeft;
-    String formulaRight;
-
-    FormulaTuple1(String formulatLeft, String formulaRight)
-    {
-        this.formulatLeft = formulatLeft;
-        this.formulaRight = formulaRight;
-    }
-}

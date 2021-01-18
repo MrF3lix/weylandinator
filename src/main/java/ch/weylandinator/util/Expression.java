@@ -5,6 +5,7 @@ import ch.weylandinator.util.exceptions.ImproperParenthesesException;
 import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.Operator;
 import ch.weylandinator.util.token.Token;
+import ch.weylandinator.util.token.operands.Real;
 import ch.weylandinator.util.token.operands.Variable;
 import ch.weylandinator.util.token.operations.Assignment;
 
@@ -24,124 +25,63 @@ public class Expression
     private final String originalExpression;
     private       String dissolvedExpression;
 
-    //ShuntingYard replacement
-    public Expression(
-        final String expressionString) throws ExpressionConverter.ConversionException, ImproperParenthesesException, ExpressionTokenizer.UnrecognizedCharacterException, ExpressionTokenizer.UnrecognizedOperatorException
+    public Expression(final String expressionString) throws ExpressionConverter.ConversionException, ImproperParenthesesException, ExpressionTokenizer.UnrecognizedCharacterException, ExpressionTokenizer.UnrecognizedOperatorException
     {
         originalExpression = expressionString;
 
         if (containsAssignement(originalExpression)) {
+            ExpressionDissolver expressionDissolver = new ExpressionDissolver();
             //Split between assignment
             //tokenize left and right separately
 
-            List<Token> tokensLeft  = ExpressionConverter.convert(ExpressionTokenizer.tokenize(expressionString));
-            List<Token> tokensright = ExpressionConverter.convert(ExpressionTokenizer.tokenize(expressionString));
+            List<Token> tokensLeft  = new ArrayList<>();
+            for(Token token : ExpressionConverter.convert(ExpressionTokenizer.tokenize(expressionString.split("=")[0]))){
+                Token t = null;
+                if(token instanceof Operator){
+                    t = OperatorMap.INSTANCE.getFor(token.toString());
+                }
+                if(token instanceof Real){
+                    t = new Real(((Real) token).getValue());
+                }
+                if(token instanceof Variable){
+                    t = new Variable(((Variable) token).toString());
+                }
+                tokensLeft.add(t);
+            }
 
-            //dissolvedExpression = dissolveExpression(originalExpression);
+            List<Token> tokensright  = new ArrayList<>();
+            for(Token token : ExpressionConverter.convert(ExpressionTokenizer.tokenize(expressionString.split("=")[1]))){
+                Token t = null;
+                if(token instanceof Operator){
+                    t = OperatorMap.INSTANCE.getFor(token.toString());
+                }
+                if(token instanceof Real){
+                    t = new Real(((Real) token).getValue());
+                }
+                if(token instanceof Variable){
+                    t = new Variable(((Variable) token).toString());
+                }
+                tokensright.add(t);
+            }
+            
+            dissolvedExpression = expressionDissolver.dissolveExpression(tokensLeft, tokensright);
         }
 
         tokens =
             Collections.unmodifiableList(ExpressionConverter.convert(ExpressionTokenizer.tokenize(expressionString)));
     }
 
-    public String dissolveExpression(List<Token> tokenListWithVar, List<Token> tokenListWithoutVar)
-    {
-        while(variableIsNotIsolated(tokenListWithVar, tokenListWithoutVar))
-        {
-            Operator mainOperation = (Operator) tokenListWithVar.get(tokenListWithVar.size() - 1);
-            List<List<Token>> tokenGroupList = getTokenGroupList(tokenListWithVar);
-            tokenListWithVar.clear();
-
-            for (List<Token> tokenList : tokenGroupList){
-                List<Token> tokenListToAdd = tokenList;
-                if(!containsVariable(tokenList)){
-                    Operator operator = (Operator) tokenList.get(tokenList.size() - 1);
-
-                    if(operator.getPriority() != (mainOperation).getPriority())
-                    {
-                        //add MainOperation
-                        tokenListToAdd.add(OperatorMap.INSTANCE.getFor(mainOperation.getSymbol()));
-                    }
-
-                    invertLast(tokenListToAdd);
-                    addTokens(tokenListWithoutVar, tokenListToAdd);
-                }
-                else{
-                    addTokens(tokenListWithVar, tokenListToAdd);
-                }
-
-            }
-        }
-        
-        if(variableHasOperator(tokenListWithVar))
-        {
-           //TODO 
-        }
-        
-        return "";
-    }
-
-    private boolean variableHasOperator(List<Token> tokenListWithVar)
-    {
-        //TODO
-        return false;
-    }
-
-    private boolean variableIsNotIsolated(List<Token> tokenListWithVar, List<Token> tokenListWithoutVar)
-    {
-        //TODO
-        return false;
-    }
-
-    private void addTokens(List<Token> tokenList, List<Token> tokenListToBeAdded)
-    {
-        tokenList.addAll(tokenListToBeAdded);
-    }
-    
-    private void invertLast(List<Token> tokenListToAdd){
-        tokenListToAdd.set(tokenListToAdd.size() - 1, ((Operator) tokenListToAdd.get(tokenListToAdd.size() - 1)).getInvertedOperation());
-    }
-
-    private boolean containsVariable(List<Token> tokenList)
-    {
-        for (Token token : tokenList){
-            if(token instanceof Variable){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<List<Token>> getTokenGroupList(List<Token> tokenListWithVar)
-    {
-        List<List<Token>> tokenGroupList = new ArrayList<>();
-
-        int distanceUntilBlockEnd = 0;
-        int blockEnd = tokenListWithVar.size() - 1;
-
-        for (int i = tokenListWithVar.size() - 1; i >= 0; i--) {
-            if (tokenListWithVar.get(i) instanceof Operand) {
-                distanceUntilBlockEnd++;
-            } else {
-                distanceUntilBlockEnd--;
-            }
-            
-            if(distanceUntilBlockEnd == 0){
-                tokenGroupList.add(tokenListWithVar.subList(i, blockEnd));
-                blockEnd = i - 1;
-            }
-        }
-        return tokenGroupList;
-    }
-
     public Operand evaluate() throws ArityException, ExpressionConverter.ConversionException
     {
         return ExpressionEvaluator.evaluate(tokens);
     }
+    
+
 
     private boolean containsAssignement(String expression)
     {
         String pattern = ".*[" + Assignment.INSTANCE.getSymbol() + "].*";
         return Pattern.compile(pattern).matcher(expression).matches();
     }
+    
 }

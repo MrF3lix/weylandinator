@@ -68,9 +68,7 @@ class ExpressionTokenizer {
      * @throws UnrecognizedCharacterException If an unrecognized character was
      *                                        encountered while parsing.
      */
-    static List<Token> tokenize(final String input) throws
-            UnrecognizedOperatorException, ImproperParenthesesException,
-            UnrecognizedCharacterException {
+    static List<Token> tokenize(final String input) {
         // Remove all whitespace
         String modifiedInput = input.replaceAll("\\s+", "");
         

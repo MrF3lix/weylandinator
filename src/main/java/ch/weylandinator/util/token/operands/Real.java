@@ -102,6 +102,13 @@ public class Real implements Operand
         return new Real(Math.sin(value));
     }
 
+
+    /**
+     * Returns the inversion of sine of this real number.
+     *
+     * @return The inversion of sine of this real number.
+     * @see Math#asin(double)
+     */
     @Override
     public Operand arcSine()
     {
@@ -119,6 +126,12 @@ public class Real implements Operand
         return new Real(Math.cos(value));
     }
 
+    /**
+     * Returns the inversion of cosine of this real number.
+     *
+     * @return The inversion of cosine of this real number.
+     * @see Math#acos(double)
+     */
     @Override
     public Operand arcCosine()
     {
@@ -136,6 +149,12 @@ public class Real implements Operand
         return new Real(Math.tan(value));
     }
 
+    /**
+     * Returns the inversion of tangent of this real number.
+     *
+     * @return The inversion of tangent of this real number.
+     * @see Math#atan(double)
+     */
     @Override
     public Operand arcTangent()
     {
@@ -193,7 +212,7 @@ public class Real implements Operand
      * @return The natural logarithm of this Real value.
      * @throws EvaluationException If its value is negative.
      */
-    public Operand log() throws EvaluationException {
+    public Operand ln() throws EvaluationException {
         if (value < 0) {
             throw new EvaluationException(
                     "Cannot calculate logarithm of a negative real number."

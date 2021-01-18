@@ -15,8 +15,7 @@ import java.util.Stack;
  */
 class ExpressionConverter {
 
-    static List<Token> convert(final List<Token> tokenList) throws
-            ConversionException, ImproperParenthesesException, ExpressionTokenizer.UnrecognizedOperatorException
+    static List<Token> convert(final List<Token> tokenList) 
     {
 
         List<Token> outputList = new ArrayList<>(tokenList.size());
