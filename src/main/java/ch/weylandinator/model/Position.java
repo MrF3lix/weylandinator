@@ -37,6 +37,15 @@ public class Position {
     public Point2D getCoords() {
         return new Point2D(getColX(col), getRowY(row));
     }
+
+    public boolean isNearPosition(Point2D otherCoords) {
+        Point2D coords = getCoords();
+
+        if(Math.abs(coords.getX() - otherCoords.getX()) < 50 && Math.abs(coords.getY() - otherCoords.getY()) < 50 ) {
+            return true;
+        }
+        return false;
+    }
     
     public static double getColX(int index) {
         return index * 170 + 70;

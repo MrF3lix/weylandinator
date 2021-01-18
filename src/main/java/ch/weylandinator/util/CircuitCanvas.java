@@ -12,6 +12,7 @@ import ch.weylandinator.model.Position;
 import ch.weylandinator.model.ResizableCanvas;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class CircuitCanvas extends ResizableCanvas {
     private int VOLTAGE_SOURCE_RADIUS = 25;
@@ -29,6 +30,8 @@ public class CircuitCanvas extends ResizableCanvas {
     private CircuitElement root;
     private double totalResistance;
 
+    private String selectedElementName;
+
     public CircuitCanvas() {
         this.gc = getGraphicsContext2D();
     }
@@ -44,6 +47,23 @@ public class CircuitCanvas extends ResizableCanvas {
 
     public void setTotalResistance(double totalResistance) {
         this.totalResistance = totalResistance;
+    }
+
+    public void setSelectedElementName(String selectedElementName) {
+        this.selectedElementName = selectedElementName;
+    }
+
+    public String getClosesElement(Point2D clickLocation) {
+
+        for(Entry<CircuitElement, Position> canvasElement : canvasElements.entrySet()) {
+
+            if(canvasElement.getValue().isNearPosition(clickLocation)) {
+                return canvasElement.getKey().getName();
+            }
+
+        }
+
+        return null;
     }
 
     private void update() {
@@ -106,6 +126,10 @@ public class CircuitCanvas extends ResizableCanvas {
                 }
             }
 
+            if(element.getKey().getName().equals(selectedElementName)) {
+                gc.setStroke(Color.BLUE);
+            }
+
             switch (element.getKey().getType()) {
                 case VOLTAGE_SOURCE:
                     printVoltageSource(element.getKey(), element.getValue().getCoords());
@@ -115,7 +139,10 @@ public class CircuitCanvas extends ResizableCanvas {
                 default:
                     break;
             }
+
+            gc.setStroke(Color.BLACK);
         }
+
 
         drawConnections();
     }

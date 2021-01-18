@@ -12,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -56,7 +57,6 @@ public class MainController implements Initializable, CircuitObserver {
      */
     @Override
     public void updated() {
-        updateElements();
 
         double totalResistance;
         try {
@@ -68,6 +68,11 @@ public class MainController implements Initializable, CircuitObserver {
         canvas.setRoot(stateManager.getRootElement());
         canvas.setTotalResistance(totalResistance);
 
+        if (selectedElement != null) {
+            canvas.setSelectedElementName(selectedElement.getName());
+        }
+
+        updateElements();
         canvas.draw();
     }
 
@@ -79,6 +84,11 @@ public class MainController implements Initializable, CircuitObserver {
         canvas.widthProperty().bind(canvasContainer.widthProperty());
         canvas.heightProperty().bind(canvasContainer.heightProperty());
 
+        canvas.setOnMouseClicked(event -> {
+            String clickedElement = canvas.getClosesElement(new Point2D(event.getX(), event.getY()));
+            selectElement(clickedElement);
+        });
+
         elementType.getItems().setAll(CircuitElementType.values());
         elementType.getSelectionModel().selectFirst();
 
@@ -86,10 +96,8 @@ public class MainController implements Initializable, CircuitObserver {
 
         elementNames.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String prevSelected,
-                    String selected) {
-                selectedElement = stateManager.findElementByName(selected);
-                updateSelectedElementValue();
+            public void changed(ObservableValue<? extends String> observableValue, String prevSelected, String selected) {
+                selectElement(selected);
             }
         });
     }
@@ -98,11 +106,11 @@ public class MainController implements Initializable, CircuitObserver {
         try {
 
             String elementName = name.getText();
-            if(elementName == null || elementName == "") {
+            if (elementName == null || elementName == "") {
                 throw new IllegalArgumentException("Name cannot be empty!");
             }
 
-            if(stateManager.findElementByName(elementName) != null) {
+            if (stateManager.findElementByName(elementName) != null) {
                 throw new IllegalArgumentException("Name already exists!");
             }
 
@@ -128,7 +136,7 @@ public class MainController implements Initializable, CircuitObserver {
             if (parentElementName != null) {
                 newElement.setParentName(parentElementName);
             } else {
-                if(stateManager.getAllElements().size() > 0) {
+                if (stateManager.getAllElements().size() > 0) {
                     throw new IllegalArgumentException("Element needs a parent element!");
                 }
             }
@@ -157,7 +165,8 @@ public class MainController implements Initializable, CircuitObserver {
             selectedElement.setCurrent(Double.parseDouble(current.getText()));
 
             String newParentElement = parentElementOfSelectedElement.getSelectionModel().getSelectedItem();
-            if(!selectedElement.getParentName().equals(newParentElement) && !selectedElement.getName().equals(newParentElement)) {
+            if (!selectedElement.getParentName().equals(newParentElement)
+                    && !selectedElement.getName().equals(newParentElement)) {
                 CircuitElement newElement = new CircuitElement(selectedElement);
 
                 stateManager.deleteElementByName(selectedElement.getName());
@@ -203,8 +212,16 @@ public class MainController implements Initializable, CircuitObserver {
         updated();
     }
 
+    private void selectElement(String name) {
+        selectedElement = stateManager.findElementByName(name);
+        updateSelectedElementValue();
+
+        canvas.setSelectedElementName(name);
+        canvas.draw();
+    }
+
     private void updateSelectedElementValue() {
-        if(selectedElement != null) {
+        if (selectedElement != null) {
             parentElementOfSelectedElement.setValue(selectedElement.getParentName());
             resistance.setText(String.valueOf(selectedElement.getResistance()));
             voltage.setText(String.valueOf(selectedElement.getVoltage()));
@@ -224,9 +241,9 @@ public class MainController implements Initializable, CircuitObserver {
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
 
         parentElementOfSelectedElement.getItems()
-                        .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
-    
-        if(selectedElement != null) {
+                .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+
+        if (selectedElement != null) {
             elementNames.setValue(selectedElement.getName());
         }
     }
