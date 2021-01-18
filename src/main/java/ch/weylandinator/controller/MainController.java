@@ -96,6 +96,16 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void add_onAction() {
         try {
+
+            String elementName = name.getText();
+            if(elementName == null || elementName == "") {
+                throw new IllegalArgumentException("Name cannot be empty!");
+            }
+
+            if(stateManager.findElementByName(elementName) != null) {
+                throw new IllegalArgumentException("Name already exists!");
+            }
+
             CircuitElement newElement = new CircuitElement();
             newElement.setName(name.getText());
             newElement.setType(elementType.getSelectionModel().getSelectedItem());
@@ -118,17 +128,21 @@ public class MainController implements Initializable, CircuitObserver {
             if (parentElementName != null) {
                 stateManager.addElementToCircuit(parentElementName, newElement);
             } else {
+                if(stateManager.getAllElements().size() > 0) {
+                    throw new IllegalArgumentException("Element needs a parent element!");
+                }
+
                 stateManager.addElementToCircuit(newElement);
             }
 
             name.clear();
             elementValue.clear();
 
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
             alert.setHeaderText("Something went wrong!");
-            alert.setContentText("Make sure to only use numeric values on the Value field.");
+            alert.setContentText(e.getMessage());
 
             alert.showAndWait();
         }
