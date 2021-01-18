@@ -26,7 +26,7 @@ public class CircuitElementHelper {
      */
     public static List<CircuitElement> getElementInParallel(CircuitElement element) {
         List<CircuitElement> directChildren = element.getChildElements();
-        if (directChildren.size() == 2 && getNumberOfResistors(directChildren) == 2) {
+        if (directChildren.size() >= 2 && getNumberOfResistors(directChildren) >= 2) {
             CircuitElement first = directChildren.get(0);
             CircuitElement second = directChildren.get(1);
 
