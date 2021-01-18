@@ -176,6 +176,8 @@ public class MainController implements Initializable, CircuitObserver {
                 stateManager.addElementToCircuit(newElement);
             }
 
+            updated();
+
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
