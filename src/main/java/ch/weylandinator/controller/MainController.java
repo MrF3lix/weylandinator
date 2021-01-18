@@ -89,8 +89,9 @@ public class MainController implements Initializable, CircuitObserver {
             String clickedElement = canvas.getClosesElement(new Point2D(event.getX(), event.getY()));
             selectElement(clickedElement);
         });
-
-        elementType.getItems().setAll(CircuitElementType.values());
+        
+        elementType.getItems().add(CircuitElementType.RESISTOR);
+        elementType.getItems().add(CircuitElementType.VOLTAGE_SOURCE);
         elementType.getSelectionModel().selectFirst();
 
         fillCircuit();
