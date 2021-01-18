@@ -9,16 +9,15 @@ import java.util.Map.Entry;
 
 import ch.weylandinator.model.CircuitElement;
 import ch.weylandinator.model.Position;
+import ch.weylandinator.model.ResizableCanvas;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
-public class CircuitCanvas {
+public class CircuitCanvas extends ResizableCanvas {
     private int VOLTAGE_SOURCE_RADIUS = 25;
 
     private GraphicsContext gc;
-
-    private Canvas canvas;
 
     private Map<CircuitElement, Position> canvasElements = new HashMap<>();
 
@@ -28,13 +27,32 @@ public class CircuitCanvas {
     private int curRow = 0;
     private int curCol = 0;
 
-    public CircuitCanvas(Canvas canvas) {
-        this.canvas = canvas;
-        this.gc = canvas.getGraphicsContext2D();
+    private CircuitElement root;
+    private double totalResistance;
+
+    public CircuitCanvas() {
+        this.gc = getGraphicsContext2D();
+    }
+    
+    @Override
+    public void draw() {
+        update();
     }
 
-    public void update(CircuitElement root, double totalResistance) {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    public void setRoot(CircuitElement root) {
+        this.root = root;
+    }
+
+    public void setTotalResistance(double totalResistance) {
+        this.totalResistance = totalResistance;
+    }
+
+    private void update() {
+        gc.clearRect(0, 0, getWidth(), getHeight());
+
+        if(root == null) {
+            return;
+        }
 
         //Set main Voltage Source
         canvasElements = new HashMap<>();
@@ -48,7 +66,7 @@ public class CircuitCanvas {
         totalCols = canvasElements.entrySet().stream().max((x,y) -> x.getValue().getCol() - y.getValue().getCol()).get().getValue().getCol()+1;
         totalRows = canvasElements.entrySet().stream().max((x,y) -> x.getValue().getRow() - y.getValue().getRow()).get().getValue().getRow()+1;
 
-        showCircuitInformation(totalResistance);
+        showCircuitInformation();
 
         printCircuit();
     }
@@ -69,9 +87,9 @@ public class CircuitCanvas {
         }
     }
 
-    private void showCircuitInformation(double totalResistance) {
+    private void showCircuitInformation() {
         if (totalResistance >= 0) {
-            gc.fillText("R - Gesamtwiederstand: " + String.format("%.2f", totalResistance) + " Ohm", 10, 10);
+            gc.fillText("R - Gesamtwiederstand: " + String.format("%.2f", totalResistance) + " Ohm", 10, 25);
         }
     }
 

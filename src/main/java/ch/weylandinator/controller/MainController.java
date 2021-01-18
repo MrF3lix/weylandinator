@@ -2,6 +2,7 @@ package ch.weylandinator.controller;
 
 import ch.weylandinator.model.CircuitElement;
 import ch.weylandinator.model.CircuitElementType;
+import ch.weylandinator.model.ResizableCanvas;
 import ch.weylandinator.state.CircuitObserver;
 import ch.weylandinator.state.StateManager;
 import ch.weylandinator.util.Calculator;
@@ -15,6 +16,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
@@ -39,12 +42,12 @@ public class MainController implements Initializable, CircuitObserver {
     @FXML
     private TextField name, start, end, elementValue, resistance, voltage, current;
 
+    private CircuitCanvas canvas;
+
     @FXML
-    private Canvas canvas;
+    private AnchorPane canvasContainer;
 
     private CircuitElement selectedElement;
-
-    private CircuitCanvas circuitCanvas;
 
     public MainController() {
         stateManager.addObserver(this);
@@ -65,13 +68,19 @@ public class MainController implements Initializable, CircuitObserver {
             totalResistance = -1;
         }
 
-        circuitCanvas.update(stateManager.getRootElement(), totalResistance);
+        canvas.setRoot(stateManager.getRootElement());
+        canvas.setTotalResistance(totalResistance);
+
+        canvas.draw();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.canvas = new CircuitCanvas();
+        canvasContainer.getChildren().add(canvas);
 
-        circuitCanvas = new CircuitCanvas(canvas);
+        canvas.widthProperty().bind(canvasContainer.widthProperty());
+        canvas.heightProperty().bind(canvasContainer.heightProperty());
 
         elementType.getItems().setAll(CircuitElementType.values());
         elementType.getSelectionModel().selectFirst();
