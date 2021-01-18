@@ -26,6 +26,10 @@ public class StateManager {
     }
 
     public CircuitElement findElementByName(String name) {
+        if(name == null) {
+            return null;
+        }
+
         return findElementByName(rootElement, name);
     }
 
@@ -56,13 +60,12 @@ public class StateManager {
     }
 
     public void addElementToCircuit(CircuitElement element) {
-        rootElement.addChildElement(element);
-        notifyObservers();
-    }
-
-    public void addElementToCircuit(String parentElementName, CircuitElement element) {
-        CircuitElement parentElement = findElementByName(parentElementName);
-        parentElement.addChildElement(element);
+        CircuitElement parent = findElementByName(element.getParentName());
+        if(parent != null) {
+            parent.addChildElement(element);
+        } else {
+            rootElement.addChildElement(element);
+        }
 
         notifyObservers();
     }

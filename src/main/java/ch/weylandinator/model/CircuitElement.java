@@ -8,6 +8,7 @@ import java.util.ListIterator;
 public class CircuitElement {
     private CircuitElementType type;
     private String name;
+    private String parentName;
 
     // Volt
     private double voltage;
@@ -32,11 +33,20 @@ public class CircuitElement {
         this.voltage = element.voltage;
         this.current = element.current;
         this.resistance = element.resistance;
+        this.parentName = element.parentName;
 
         this.childElements = new ArrayList<>();
         for(CircuitElement child : element.getChildElements()) {
             this.childElements.add(new CircuitElement(child));
         }
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public String getParentName() {
+        return parentName;
     }
 
     public CircuitElementType getType() {

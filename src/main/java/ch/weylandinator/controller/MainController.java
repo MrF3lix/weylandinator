@@ -34,7 +34,7 @@ public class MainController implements Initializable, CircuitObserver {
     private ChoiceBox<CircuitElementType> elementType;
 
     @FXML
-    private ChoiceBox<String> elementNames, availableElements;
+    private ChoiceBox<String> elementNames, availableElements, parentElementOfSelectedElement;
 
     @FXML
     private TextField name, start, end, elementValue, resistance, voltage, current;
@@ -126,14 +126,14 @@ public class MainController implements Initializable, CircuitObserver {
 
             String parentElementName = availableElements.getSelectionModel().getSelectedItem();
             if (parentElementName != null) {
-                stateManager.addElementToCircuit(parentElementName, newElement);
+                newElement.setParentName(parentElementName);
             } else {
                 if(stateManager.getAllElements().size() > 0) {
                     throw new IllegalArgumentException("Element needs a parent element!");
                 }
-
-                stateManager.addElementToCircuit(newElement);
             }
+
+            stateManager.addElementToCircuit(newElement);
 
             name.clear();
             elementValue.clear();
@@ -156,13 +156,21 @@ public class MainController implements Initializable, CircuitObserver {
             selectedElement.setVoltage(Double.parseDouble(voltage.getText()));
             selectedElement.setCurrent(Double.parseDouble(current.getText()));
 
-            // TODO use observer
-            updated();
+            String newParentElement = parentElementOfSelectedElement.getSelectionModel().getSelectedItem();
+            if(!selectedElement.getParentName().equals(newParentElement) && !selectedElement.getName().equals(newParentElement)) {
+                CircuitElement newElement = new CircuitElement(selectedElement);
+
+                stateManager.deleteElementByName(selectedElement.getName());
+
+                newElement.setParentName(newParentElement);
+                stateManager.addElementToCircuit(newElement);
+            }
+
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
             alert.setHeaderText("Something went wrong!");
-            alert.setContentText("Input fields only allow numeric values.");
+            alert.setContentText(e.getMessage());
 
             alert.showAndWait();
         }
@@ -197,6 +205,7 @@ public class MainController implements Initializable, CircuitObserver {
 
     private void updateSelectedElementValue() {
         if(selectedElement != null) {
+            parentElementOfSelectedElement.setValue(selectedElement.getParentName());
             resistance.setText(String.valueOf(selectedElement.getResistance()));
             voltage.setText(String.valueOf(selectedElement.getVoltage()));
             current.setText(String.valueOf(selectedElement.getCurrent()));
@@ -204,6 +213,7 @@ public class MainController implements Initializable, CircuitObserver {
             resistance.clear();
             voltage.clear();
             current.clear();
+            parentElementOfSelectedElement.getSelectionModel().clearSelection();
         }
     }
 
@@ -212,6 +222,9 @@ public class MainController implements Initializable, CircuitObserver {
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
         availableElements.getItems()
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+
+        parentElementOfSelectedElement.getItems()
+                        .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
     
         if(selectedElement != null) {
             elementNames.setValue(selectedElement.getName());
@@ -228,12 +241,7 @@ public class MainController implements Initializable, CircuitObserver {
         r1.setName("r1");
         r1.setType(RESISTOR);
         r1.setResistance(1000d);
-        stateManager.addElementToCircuit("U", r1);
-
-        CircuitElement r2 = new CircuitElement();
-        r2.setName("r2");
-        r2.setType(RESISTOR);
-        r2.setResistance(500d);
-        stateManager.addElementToCircuit("r1", r2);
+        r1.setParentName("U");
+        stateManager.addElementToCircuit(r1);
     }
 }
