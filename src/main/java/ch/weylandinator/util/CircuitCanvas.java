@@ -125,17 +125,15 @@ public class CircuitCanvas extends ResizableCanvas {
                     drawConnection(element.getValue(), childElement.get().getValue());
                 }
             }
-
-            if(element.getKey().getName().equals(selectedElementName)) {
-                gc.setStroke(Color.RED);
-            }
+            
+            boolean selected = element.getKey().getName().equals(selectedElementName);
 
             switch (element.getKey().getType()) {
                 case VOLTAGE_SOURCE:
-                    printVoltageSource(element.getKey(), element.getValue().getCoords());
+                    printVoltageSource(element.getKey(), element.getValue().getCoords(), selected);
                     break;
                 case RESISTOR:
-                    printResistor(element.getKey(), element.getValue().getCoords());
+                    printResistor(element.getKey(), element.getValue().getCoords(), selected);
                 default:
                     break;
             }
@@ -147,26 +145,46 @@ public class CircuitCanvas extends ResizableCanvas {
         drawConnections();
     }
 
-    private void printVoltageSource(CircuitElement element, Point2D location) {
+    private void printVoltageSource(CircuitElement element, Point2D location, boolean selected) {
         int radius = VOLTAGE_SOURCE_RADIUS;
         int padding = 25;
         double x = location.getX();
         double y = location.getY();
-
+        
+        if(selected){
+            gc.setStroke(Color.BLUE);
+        }
+        
         gc.setLineWidth(2.0);
+        if(selected){
+            gc.setFill(Color.LIGHTBLUE);
+            gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+            gc.setFill(Color.BLACK);
+        }
         gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
         gc.strokeLine(x, y - radius - padding, x, y + radius + padding);
-        gc.fillText(element.getName(), x + radius + 10, y);
+        gc.fillText(element.getName(), x + radius + padding, y);
+        
+        gc.setStroke(Color.BLACK);
     }
 
-    private void printResistor(CircuitElement element, Point2D location) {
+    private void printResistor(CircuitElement element, Point2D location, boolean selected) {
         int width = 20;
         int height = 80;
         int padding = 10;
         double x = location.getX();
         double y = location.getY();
 
+        if(selected){
+            gc.setStroke(Color.BLUE);
+        }
+
         gc.strokeLine(x, y - height / 2 - padding, x, y - height / 2);
+        if(selected){
+            gc.setFill(Color.LIGHTBLUE);
+            gc.fillRect(x - width / 2, y - height / 2, width, height);
+            gc.setFill(Color.BLACK);
+        }
         gc.strokeRect(x - width / 2, y - height / 2, width, height);
         gc.strokeLine(x, y + height / 2 + padding, x, y + height / 2);
         gc.fillText(element.getName(), x + width/2 + padding, y);
@@ -175,6 +193,8 @@ public class CircuitCanvas extends ResizableCanvas {
             double bottom = Position.getRowY(totalRows-1)+50;
             gc.strokeLine(x, y + height / 2, x,bottom);
         }
+
+        gc.setStroke(Color.BLACK);
     }
 
     private void drawConnection(Position startPosition, Position endLocation) {
