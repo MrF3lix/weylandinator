@@ -127,7 +127,7 @@ public class CircuitCanvas extends ResizableCanvas {
             }
 
             if(element.getKey().getName().equals(selectedElementName)) {
-                gc.setStroke(Color.BLUE);
+                gc.setStroke(Color.RED);
             }
 
             switch (element.getKey().getType()) {
@@ -156,7 +156,7 @@ public class CircuitCanvas extends ResizableCanvas {
         gc.setLineWidth(2.0);
         gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
         gc.strokeLine(x, y - radius - padding, x, y + radius + padding);
-        gc.fillText(element.getName(), x + radius + padding, y);
+        gc.fillText(element.getName(), x + radius + 10, y);
     }
 
     private void printResistor(CircuitElement element, Point2D location) {
@@ -169,7 +169,7 @@ public class CircuitCanvas extends ResizableCanvas {
         gc.strokeLine(x, y - height / 2 - padding, x, y - height / 2);
         gc.strokeRect(x - width / 2, y - height / 2, width, height);
         gc.strokeLine(x, y + height / 2 + padding, x, y + height / 2);
-        gc.fillText(element.getName(), x + width, y);
+        gc.fillText(element.getName(), x + width/2 + padding, y);
 
         if(element.getChildElements().size() == 0) {
             double bottom = Position.getRowY(totalRows-1)+50;
