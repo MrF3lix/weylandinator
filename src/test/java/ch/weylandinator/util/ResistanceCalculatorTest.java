@@ -73,7 +73,6 @@ public class ResistanceCalculatorTest {
      * 3 resistors in parallel
      */
     @Test
-    @Disabled
     void canCalculateSimpleParallelCircuit2() {
         //TODO; doesn't work yet.
         r1.setResistance(500d);

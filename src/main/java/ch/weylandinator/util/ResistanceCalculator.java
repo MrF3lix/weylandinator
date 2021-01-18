@@ -69,15 +69,14 @@ public class ResistanceCalculator {
             resistance = Math.pow(first.getResistance(), -1d) + Math.pow(second.getResistance(), -1d);
             resistance = Math.pow(resistance, -1d);
 
-            CircuitElement replacement = new CircuitElement(parallelElements.get(parallelElements.size() - 1));
+            CircuitElement replacement = new CircuitElement(first);
             replacement.setName("RP#"+index);
             replacement.setResistance(resistance);
 
-            root.replaceChildElement(parallelElements.get(0), replacement);
-
-            for (CircuitElement serialElement : parallelElements) {
-                root.deleteChildElement(serialElement.getName());
-            }
+            root.replaceChildElement(first, replacement);
+            
+            root.deleteChildElement(first.getName());
+            root.deleteChildElement(second.getName());
         }
 
         return resistance;
