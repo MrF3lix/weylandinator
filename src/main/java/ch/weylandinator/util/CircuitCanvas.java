@@ -118,6 +118,11 @@ public class CircuitCanvas {
         gc.strokeRect(x - width / 2, y - height / 2, width, height);
         gc.strokeLine(x, y + height / 2 + padding, x, y + height / 2);
         gc.fillText(element.getName(), x + width, y);
+
+        if(element.getChildElements().size() == 0) {
+            double bottom = Position.getRowY(totalRows-1)+50;
+            gc.strokeLine(x, y + height / 2, x,bottom);
+        }
     }
 
     private void drawConnections() {
