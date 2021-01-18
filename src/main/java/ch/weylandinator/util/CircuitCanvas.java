@@ -150,22 +150,35 @@ public class CircuitCanvas extends ResizableCanvas {
         int padding = 25;
         double x = location.getX();
         double y = location.getY();
-        
+
+        Color textColor = Color.BLACK;
+        Color lineColor = Color.BLACK;
+        Color fillColor = Color.LIGHTGRAY;
         if(selected){
-            gc.setStroke(Color.BLUE);
+            textColor = Color.BLUE;
+            lineColor = Color.BLUE;
+            fillColor = Color.LIGHTBLUE;
         }
         
+        //line
+        gc.setStroke(lineColor);
         gc.setLineWidth(2.0);
-        if(selected){
-            gc.setFill(Color.LIGHTBLUE);
-            gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-            gc.setFill(Color.BLACK);
-        }
-        gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
         gc.strokeLine(x, y - radius - padding, x, y + radius + padding);
+        
+        //outline
+        gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
+        
+        //fill
+        gc.setFill(fillColor);
+        gc.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+        
+        //text
+        gc.setFill(textColor);
         gc.fillText(element.getName(), x + radius + padding, y);
         
+        
         gc.setStroke(Color.BLACK);
+        gc.setFill(Color.BLACK);
     }
 
     private void printResistor(CircuitElement element, Point2D location, boolean selected) {
@@ -174,27 +187,37 @@ public class CircuitCanvas extends ResizableCanvas {
         int padding = 10;
         double x = location.getX();
         double y = location.getY();
-
+        
+        Color textColor = Color.BLACK;
+        Color lineColor = Color.BLACK;
+        Color fillColor = Color.LIGHTGRAY;
         if(selected){
-            gc.setStroke(Color.BLUE);
+            textColor = Color.BLUE;
+            lineColor = Color.BLUE;
+            fillColor = Color.LIGHTBLUE;
         }
 
+        //lines
+        gc.setStroke(lineColor);
         gc.strokeLine(x, y - height / 2 - padding, x, y - height / 2);
-        if(selected){
-            gc.setFill(Color.LIGHTBLUE);
-            gc.fillRect(x - width / 2, y - height / 2, width, height);
-            gc.setFill(Color.BLACK);
-        }
         gc.strokeRect(x - width / 2, y - height / 2, width, height);
         gc.strokeLine(x, y + height / 2 + padding, x, y + height / 2);
-        gc.fillText(element.getName(), x + width/2 + padding, y);
-
         if(element.getChildElements().size() == 0) {
             double bottom = Position.getRowY(totalRows-1)+50;
             gc.strokeLine(x, y + height / 2, x,bottom);
         }
+        
+        //fill
+        gc.setFill(fillColor);
+        gc.fillRect(x - width / 2, y - height / 2, width, height);
+        
+        //text
+        gc.setFill(textColor);
+        gc.setLineWidth(2.0);
+        gc.fillText(element.getName(), x + width/2 + padding, y);
 
         gc.setStroke(Color.BLACK);
+        gc.setFill(Color.BLACK);
     }
 
     private void drawConnection(Position startPosition, Position endLocation) {
