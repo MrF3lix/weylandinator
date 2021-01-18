@@ -11,4 +11,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Can delete elements from a circuit.
 - Can adjust parameters of an element.
 - Can calculate total resistance.
-- 
