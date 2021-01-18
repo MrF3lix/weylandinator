@@ -8,9 +8,18 @@ public class Position {
 
     private int col;
 
+    private boolean isReversed;
+
     public Position(int row, int col) {
         this.row = row;
         this.col = col;
+        this.isReversed = false;
+    }
+
+    public Position(int row, int col, boolean isReversed) {
+        this.row = row;
+        this.col = col;
+        this.isReversed = isReversed;
     }
 
     public int getRow() {
@@ -19,6 +28,10 @@ public class Position {
 
     public int getCol() {
         return col;
+    }
+
+    public boolean isReversed() {
+        return isReversed;
     }
 
     public Point2D getCoords() {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 
 import ch.weylandinator.model.CircuitElement;
@@ -38,7 +39,7 @@ public class CircuitCanvas {
         //Set main Voltage Source
         canvasElements = new HashMap<>();
         CircuitElement voltageSource = root.getChildElements().get(0);
-        canvasElements.put(voltageSource, new Position(0, 0));
+        canvasElements.put(voltageSource, new Position(0, 0, true));
 
         curRow = -1;
         curCol = 1;
@@ -80,6 +81,14 @@ public class CircuitCanvas {
 
         while (it.hasNext()) {
             Entry<CircuitElement, Position> element = it.next();
+
+                for(CircuitElement child : element.getKey().getChildElements()) {
+                    Optional<Entry<CircuitElement, Position>> childElement = canvasElements.entrySet().stream().filter(c -> child.getName().equals(c.getKey().getName())).findFirst();
+
+                    if(childElement.isPresent()) {
+                        drawConnection(element.getValue(), childElement.get().getValue());
+                    }
+                }
 
             switch (element.getKey().getType()) {
                 case VOLTAGE_SOURCE:
@@ -125,13 +134,24 @@ public class CircuitCanvas {
         }
     }
 
+    private void drawConnection(Position startPosition, Position endLocation) {
+
+        Point2D start = startPosition.getCoords();
+        Point2D end = endLocation.getCoords();
+
+        if(startPosition.isReversed()) {
+            gc.strokeLine(start.getX(), start.getY()-50, end.getX(), end.getY()-50);
+        } else {
+            gc.strokeLine(start.getX(), start.getY()+50, end.getX(), end.getY()-50);
+        }
+    }
+
     private void drawConnections() {
         double width = Position.getColX(totalCols-1);
 
         double top = 50;
         double bottom = Position.getRowY(totalRows-1)+50;
 
-        gc.strokeLine(70, top, width, top);
         gc.strokeLine(70, bottom, width, bottom);
         gc.strokeLine(Position.getColX(0), top, Position.getColX(0), bottom);
     }
