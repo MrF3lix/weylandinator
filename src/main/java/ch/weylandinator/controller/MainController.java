@@ -150,6 +150,8 @@ public class MainController implements Initializable, CircuitObserver {
 
     public void update_onAction() {
         try {
+            selectedElement = stateManager.findElementByName(elementNames.getValue());
+
             selectedElement.setResistance(Double.parseDouble(resistance.getText()));
             selectedElement.setVoltage(Double.parseDouble(voltage.getText()));
             selectedElement.setCurrent(Double.parseDouble(current.getText()));
@@ -171,7 +173,6 @@ public class MainController implements Initializable, CircuitObserver {
             stateManager.deleteElementByName(selectedElement.getName());
             selectedElement = null;
             updateSelectedElementValue();
-            elementNames.getSelectionModel().clearSelection();
         } catch (Exception e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Exception Dialog");
@@ -211,6 +212,10 @@ public class MainController implements Initializable, CircuitObserver {
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
         availableElements.getItems()
                 .setAll(stateManager.getAllElements().stream().map(n -> n.getName()).collect(Collectors.toList()));
+    
+        if(selectedElement != null) {
+            elementNames.setValue(selectedElement.getName());
+        }
     }
 
     private void fillCircuit() {
