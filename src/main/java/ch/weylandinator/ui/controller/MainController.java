@@ -1,13 +1,11 @@
-package ch.weylandinator.controller;
+package ch.weylandinator.ui.controller;
 
-import ch.weylandinator.model.CircuitElement;
-import ch.weylandinator.model.CircuitElementType;
-import ch.weylandinator.state.CircuitObserver;
-import ch.weylandinator.state.StateManager;
-import ch.weylandinator.util.Calculator;
-import ch.weylandinator.util.CircuitCanvas;
-import ch.weylandinator.util.Formula;
-import ch.weylandinator.util.ResistanceCalculator;
+import ch.weylandinator.ui.model.CircuitElement;
+import ch.weylandinator.ui.model.CircuitElementType;
+import ch.weylandinator.logic.state.CircuitObserver;
+import ch.weylandinator.logic.state.StateManager;
+import ch.weylandinator.ui.model.CircuitCanvas;
+import ch.weylandinator.logic.ResistanceCalculator;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -20,14 +18,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static ch.weylandinator.model.CircuitElementType.RESISTOR;
-import static ch.weylandinator.model.CircuitElementType.VOLTAGE_SOURCE;
+import static ch.weylandinator.ui.model.CircuitElementType.RESISTOR;
+import static ch.weylandinator.ui.model.CircuitElementType.VOLTAGE_SOURCE;
 
 public class MainController implements Initializable, CircuitObserver {
     private StateManager stateManager = StateManager.getInstance();
@@ -205,14 +201,6 @@ public class MainController implements Initializable, CircuitObserver {
     }
 
     public void solve_onAction() {
-        Calculator calculator = new Calculator();
-        calculator.solveCircuit(stateManager.getAllElements());
-
-        Formula formula = Formula.URI;
-        Map<String, Double> variableMap = new HashMap<>();
-        variableMap.put("R", 1.4);
-        variableMap.put("I", 100.0);
-
         updated();
     }
 

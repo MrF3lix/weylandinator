@@ -1,6 +1,6 @@
 package ch.weylandinator.util;
 
-import ch.weylandinator.model.CircuitElement;
+import ch.weylandinator.ui.model.CircuitElement;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

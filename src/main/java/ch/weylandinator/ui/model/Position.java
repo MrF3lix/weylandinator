@@ -1,4 +1,4 @@
-package ch.weylandinator.model;
+package ch.weylandinator.ui.model;
 
 import javafx.geometry.Point2D;
 

@@ -1,11 +1,10 @@
-package ch.weylandinator.util;
+package ch.weylandinator.logic;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import ch.weylandinator.model.CircuitElement;
-import ch.weylandinator.model.CircuitElementType;
+import ch.weylandinator.ui.model.CircuitElement;
+import ch.weylandinator.ui.model.CircuitElementType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

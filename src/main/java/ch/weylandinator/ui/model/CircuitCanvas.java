@@ -1,4 +1,4 @@
-package ch.weylandinator.util;
+package ch.weylandinator.ui.model;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
 
-import ch.weylandinator.model.CircuitElement;
-import ch.weylandinator.model.Position;
-import ch.weylandinator.model.ResizableCanvas;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

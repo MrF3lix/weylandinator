@@ -1,6 +1,5 @@
 package ch.weylandinator.util;
 
-import ch.weylandinator.util.token.Operand;
 import ch.weylandinator.util.token.operands.Real;
 import org.junit.jupiter.api.Test;
 

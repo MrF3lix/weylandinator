@@ -1,10 +1,8 @@
-package ch.weylandinator.util;
+package ch.weylandinator.ui.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import ch.weylandinator.model.CircuitElement;
-import ch.weylandinator.model.CircuitElementType;
 
 public class CircuitElementHelper {
     public static List<CircuitElement> getFlatList(List<CircuitElement> elements) {

@@ -1,4 +1,4 @@
-package ch.weylandinator.model;
+package ch.weylandinator.ui.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;

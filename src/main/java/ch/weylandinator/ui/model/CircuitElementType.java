@@ -1,4 +1,4 @@
-package ch.weylandinator.model;
+package ch.weylandinator.ui.model;
 
 public enum CircuitElementType {
     VOLTAGE_SOURCE, RESISTOR, LOAD

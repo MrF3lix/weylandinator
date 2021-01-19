@@ -1,10 +1,10 @@
-package ch.weylandinator.state;
+package ch.weylandinator.logic.state;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.weylandinator.model.CircuitElement;
-import ch.weylandinator.util.CircuitElementHelper;
+import ch.weylandinator.ui.model.CircuitElement;
+import ch.weylandinator.ui.model.CircuitElementHelper;
 
 public class StateManager {
 

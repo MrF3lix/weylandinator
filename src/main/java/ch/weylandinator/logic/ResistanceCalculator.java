@@ -1,8 +1,9 @@
-package ch.weylandinator.util;
+package ch.weylandinator.logic;
 
 import java.util.List;
-import ch.weylandinator.model.CircuitElement;
-import ch.weylandinator.model.CircuitElementType;
+import ch.weylandinator.ui.model.CircuitElement;
+import ch.weylandinator.ui.model.CircuitElementHelper;
+import ch.weylandinator.ui.model.CircuitElementType;
 
 public class ResistanceCalculator {
     private CircuitElement rootElement;

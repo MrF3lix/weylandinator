@@ -1,4 +1,4 @@
-package ch.weylandinator.model;
+package ch.weylandinator.ui.model;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
