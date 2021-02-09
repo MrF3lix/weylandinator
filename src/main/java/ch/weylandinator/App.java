@@ -14,8 +14,12 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Main.fxml"));
+        
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("/stylesheets/DefaultStyles.css");
+        
         stage.setTitle("Weylandinator");
-        stage.setScene(new Scene(root));
+        stage.setScene(scene);
         stage.getIcons().add(new Image("logo.png"));
         stage.setMinWidth(1020.0);
         stage.show();

@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane minHeight="500.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.weylandinator.ui.controller.MainController">
    <children>
@@ -21,7 +14,7 @@
                 <AnchorPane fx:id="canvasContainer" minHeight="500.0" />
                </content>
             </ScrollPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS" SplitPane.resizableWithParent="false">
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" stylesheets="@../stylesheets/DefaultStyles.css" vbarPolicy="ALWAYS" SplitPane.resizableWithParent="false">
                <content>
                 <AnchorPane minWidth="-Infinity" prefHeight="900.0" prefWidth="300.0">
                      <children>
